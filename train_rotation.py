@@ -1,3 +1,8 @@
+# Complex input should be an object of class.
+# Method in a class should have a obvious verbal, like get_something().
+# set attribute within __init__(self) function.
+
+
 import argparse
 import torch
 from IPython.core.debugger import set_trace
@@ -12,62 +17,29 @@ from models import model_factory
 from optimizer.optimizer_helper import get_optim_and_scheduler
 from utils.Logger import Logger
 import numpy as np
+from torch import optim
 
 
-def get_args():
-    parser = argparse.ArgumentParser(description="Script to launch jigsaw training", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+class MyTrainingArgument(argparse.ArgumentParser):
+    """Store the arguments coming from the console.
 
-    # Arguments for training
-    parser.add_argument("--network", choices=model_factory.nets_map.keys(), help="Which network to use", default="caffenet")
-    parser.add_argument("--source", choices=available_datasets, help="Source", nargs='+')
-    parser.add_argument("--target", choices=available_datasets, help="Target")
-    parser.add_argument("--n_classes", "-c", type=int, default=31, help="Number of classes")
-    # parser.add_argument("--jigsaw_n_classes", "-jc", type=int, default=31, help="Number of classes for the jigsaw task")
-    parser.add_argument("--jig_weight", type=float, default=0.1, help="Weight for the jigsaw puzzle")
-
-    parser.add_argument("--ooo_weight", type=float, default=0, help="Weight for odd one out task")
-    # image_size: For example, an image's size is 3*225*225
-    parser.add_argument("--image_size", type=int, default=225, help="Image size")
-    # In general, in each epoch, all the samples are used for one time.
-    parser.add_argument("--epochs", "-e", type=int, default=30, help="Number of epochs")
-    # batch_size (int, optional): The number of samples used for training in each iteration.
-    parser.add_argument("--batch_size", "-b", type=int, default=64, help="Batch size")
-    parser.add_argument("--val_size", type=float, default="0.1", help="Validation size (between 0 and 1)")
-    parser.add_argument("--learning_rate", "-l", type=float, default=.01, help="Learning rate")
-
-    # Argument for logger.
-    parser.add_argument("--tf_logger", type=bool, default=True, help="If true will save tensorboard compatible logs")
-    parser.add_argument("--folder_name", default=None, help="Used by the logger to save logs")
-
-    #
-    parser.add_argument("--limit_source", default=None, type=int, help="If set, it will limit the number of training samples")
-    parser.add_argument("--limit_target", default=None, type=int, help="If set, it will limit the number of testing samples")
-    parser.add_argument("--bias_whole_image", default=None, type=float, help="If set, will bias the training procedure to show more often the whole image")
-    parser.add_argument("--classify_only_sane", default=False, type=bool, help="If true, the network will only try to classify the non scrambled images")
-    parser.add_argument("--train_all", default=False, type=bool, help="If true, all network weights will be trained")
-    parser.add_argument("--suffix", default="", help="Suffix for the logger")
-    parser.add_argument("--nesterov", default=False, type=bool, help="Use nesterov")
-
-    # Arguments for Test-Time Augmentation
-    parser.add_argument("--TTA", type=bool, default=False, help="Activate test time data augmentation")
-    parser.add_argument("--min_scale", default=0.8, type=float, help="Minimum scale percent")
-    parser.add_argument("--max_scale", default=1.0, type=float, help="Maximum scale percent")
-    parser.add_argument("--random_horiz_flip", default=0.0, type=float, help="Chance of random horizontal flip")
-    parser.add_argument("--jitter", default=0.0, type=float, help="Color jitter amount")
-    parser.add_argument("--tile_random_grayscale", default=0.1, type=float,
-                        help="Chance of randomly greyscaling a tile")
-
-    return parser.parse_args()
-
-
-class TraningArgument(argparse.ArgumentParser):
+    Implementation:
+        set_arguments_dictionary:
+        training_arguments:A dictionary containing all the arguments from the console.
+    """
     def __init__(self):
-        super(TraningArgument, self).__init__(
+        super(MyTrainingArgument, self).__init__(
             description="Script to launch jigsaw training",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter
         )
+        self._get_arguments_from_console()
+        self.training_arguments = self.parse_args()
 
-    def get_arguments_from_console(self):
+    def _get_arguments_from_console(self):
+        """Get the training arguments from the console.
+
+        :return:
+        """
         # Arguments for training
         self.add_argument("--network", choices=model_factory.nets_map.keys(), help="Which network to use",
                             default="caffenet")
@@ -115,46 +87,113 @@ class TraningArgument(argparse.ArgumentParser):
         self.add_argument("--tile_random_grayscale", default=0.1, type=float,
                             help="Chance of randomly greyscaling a tile")
 
-    def arguments_dictionary(self):
-        return self.parse_args()
 
+class MyModel:
+    """Return the network according to the number of output classes and the name of the
+    back bone network.
 
+    Implementation:
+        model
+    """
+    def __init__(self, my_training_arguments):
+        """
 
-class Trainer:
-    def __init__(self, args, device):
-        self.args = args
-        self.device = device
-
-        # TODO(LYJ):Wait to change.
-        model = model_factory.get_network(args.network)(
+        :param my_training_arguments:Include name of network,  the number of unsupervised classes and
+        supervised classes.
+        """
+        self.model = model_factory.get_network(my_training_arguments.training_arguments.network)(
             # Jigsaw class of 0 refers to original picture, apart from the original one, there
             # are another 30 classes, in total 31 classes of jigsaw pictures.
-            # jigsaw_classes=args.jigsaw_n_classes + 1,
+            # jigsaw_classes=training_arguments.jigsaw_n_classes + 1,
 
             # When using rotation technology as the unsupervised task, there are in total
             # 4 classes, which are original one, 90, 180, 270 degree.
             jigsaw_classes = 4,
-            classes=args.n_classes
+            classes=my_training_arguments.training_arguments.n_classes
         )
-        self.model = model.to(device)
+
+
+class MyDataLoader:
+    """Return source, validation, test data loaders.
+
+    Implementation:
+        source_data_loader
+        validation_data_loader
+        test_data_loader
+
+    """
+    def __init__(self, my_training_arguments, is_patch_based_or_not):
+        """
+
+        :param my_training_arguments:
+        :param is_patch_based_or_not:
+        """
+        self.source_data_loader, self.validation_data_loader = data_helper.get_train_dataloader(
+            my_training_arguments,
+            patches=is_patch_based_or_not
+        )
+        self.test_data_loader = data_helper.get_val_dataloader(
+            my_training_arguments,
+            patches=is_patch_based_or_not
+        )
+
+
+class MyOptimizer:
+    """Return my optimizer.
+
+    Implementation:
+        optimizer
+
+    """
+    def __init__(self, my_training_arguments, my_model):
+        if my_training_arguments.training_arguments.train_all:
+            model_parameters = my_model.model.parameters()
+        else:
+            model_parameters = my_model.model.get_params(my_training_arguments.training_arguments.learning_rate)
+        self.optimizer = optim.SGD(
+            model_parameters,
+            weight_decay=.0005,
+            momentum=.9,
+            nesterov=my_training_arguments.training_arguments.nesterov,
+            lr=my_training_arguments.training_arguments.learning_rate
+        )
+
+
+class MyScheduler:
+    def __init__(self, my_training_arguments, my_optimizer):
+        step_size = int(my_training_arguments.training_arguments.epochs * .8)
+        self.scheduler = optim.lr_scheduler.StepLR(my_optimizer.optimizer, step_size)
+
+
+
+
+class Trainer:
+    def __init__(self, my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device):
+        self.training_arguments = my_training_arguments.training_arguments
+        self.device = device
+        self.model = my_model.model.to(device)
+        self.jig_weight = self.training_arguments.jig_weight # Weight for the jigsaw puzzle
+        self.only_non_scrambled = self.training_arguments.classify_only_sane # if true only classify the orderd images
+        self.n_classes = self.training_arguments.n_classes
 
         # TODO(LYJ):patch based
-        self.source_loader, self.val_loader = data_helper.get_train_dataloader(args, patches=model.is_patch_based())
-        # self.source_loader = data_helper.get_train_dataloader(args, patches=model.is_patch_based())
+        # self.source_loader, self.val_loader = data_helper.get_train_dataloader(training_arguments, patches=self.model.is_patch_based())
+        # self.target_loader = data_helper.get_val_dataloader(training_arguments, patches=self.model.is_patch_based())
+        self.source_loader = my_data_loader.source_data_loader
+        self.val_loader = my_data_loader.validation_data_loader
+        self.target_loader = my_data_loader.test_data_loader
 
-        self.target_loader = data_helper.get_val_dataloader(args, patches=model.is_patch_based())
         self.test_loaders = {"val": self.val_loader, "test": self.target_loader}
-        self.len_dataloader = len(self.source_loader)
-
         print("Dataset size: train %d, val %d, test %d" % (len(self.source_loader.dataset), len(self.val_loader.dataset), len(self.target_loader.dataset)))
-        self.optimizer, self.scheduler = get_optim_and_scheduler(model, args.epochs, args.learning_rate, args.train_all, nesterov=args.nesterov)
-        self.jig_weight = args.jig_weight # Weight for the jigsaw puzzle
-        self.only_non_scrambled = args.classify_only_sane # if true only classify the orderd images
-        self.n_classes = args.n_classes
-        if args.target in args.source:
-            self.target_id = args.source.index(args.target)
+
+        # self.optimizer, self.scheduler = get_optim_and_scheduler(self.model, self.training_arguments.epochs, self.training_arguments.learning_rate, self.training_arguments.train_all, nesterov=self.training_arguments.nesterov)
+        self.optimizer = my_optimizer.optimizer
+        self.scheduler = my_scheduler.scheduler
+
+        if self.training_arguments.target in self.training_arguments.source:
+            self.target_id = self.training_arguments.source.index(self.training_arguments.target)
             print("Target in source: %d" % self.target_id)
-            print(args.source)
+            print(self.training_arguments.source)
         else:
             self.target_id = None
 
@@ -264,9 +303,9 @@ class Trainer:
 
 
     def do_training(self):
-        self.logger = Logger(self.args, update_frequency=30)  # , "domain", "lambda"
-        self.results = {"val": torch.zeros(self.args.epochs), "test": torch.zeros(self.args.epochs)}
-        for self.current_epoch in range(self.args.epochs):
+        self.logger = Logger(self.training_arguments, update_frequency=30)  # , "domain", "lambda"
+        self.results = {"val": torch.zeros(self.training_arguments.epochs), "test": torch.zeros(self.training_arguments.epochs)}
+        for self.current_epoch in range(self.training_arguments.epochs):
             print("current epoch:%d", self.current_epoch)
             self.scheduler.step()
             self.logger.new_epoch(self.scheduler.get_lr())
@@ -275,7 +314,7 @@ class Trainer:
         test_res = self.results["test"]
         idx_best = val_res.argmax()
         #print("Best val %g, corresponding test %g - best test: %g" % (val_res.max(), test_res[idx_best], test_res.max()))
-        print(self.args.target)
+        print(self.training_arguments.target)
         print("Highest accuracy on validation set appears on epoch ", val_res.argmax().data)
         print("Highest accuracy on test set appears on epoch ",  test_res.argmax().data)
         self.logger.save_best(test_res[idx_best], test_res.max())
@@ -284,10 +323,12 @@ class Trainer:
 if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True
 
-    training_arguments = TraningArgument()
-    training_arguments.get_arguments_from_console()
-    # args = get_args()
-    args = training_arguments.arguments_dictionary()
+    my_training_arguments = MyTrainingArgument()
+    my_model = MyModel(my_training_arguments)
+    is_patch_based_or_not = my_model.model.is_patch_based()
+    my_data_loader = MyDataLoader(my_training_arguments, is_patch_based_or_not)
+    my_optimizer = MyOptimizer(my_training_arguments, my_model)
+    my_scheduler = MyScheduler(my_training_arguments, my_optimizer)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    trainer = Trainer(args, device)
+    trainer = Trainer(my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device)
     trainer.do_training()

@@ -70,7 +70,8 @@ def get_val_transformer(args):
               transforms.Normalize([0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
     return transforms.Compose(img_tr)
 
-def get_train_dataloader(args, patches):
+def get_train_dataloader(training_arguments, patches):
+    args = training_arguments.training_arguments
     dataset_list = args.source
     assert isinstance(dataset_list, list)
     datasets = []
@@ -95,7 +96,8 @@ def get_train_dataloader(args, patches):
     return loader, val_loader
 
 
-def get_val_dataloader(args, patches=False):
+def get_val_dataloader(training_arguments, patches=False):
+    args = training_arguments.training_arguments
     names, labels = _dataset_info(join(dirname(__file__), 'txt_lists', '%s_test.txt' % args.target))
     img_tr = get_val_transformer(args)
     val_dataset = JigsawTestDataset(names, labels, patches=patches, img_transformer=img_tr, jig_classes=4)
