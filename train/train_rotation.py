@@ -1,23 +1,20 @@
-# Complex input should be an object of class.
-# Method in a class should have a obvious verbal, like get_something().
+
+# Complex input should be an entity of class.
+# Name of method in a class should contain an obvious verbal, like get_something().
 # set attribute within __init__(self) function.
 
 
-import argparse
 import torch
-from IPython.core.debugger import set_trace
+from torch import optim
 from torch import nn
 from torch.nn import functional as F
-# from data import data_helper
-# rotation
-from data.rotation import data_helper
-# from IPython.core.debugger import set_trace
-from data.data_helper import available_datasets
-from models import model_factory
-from Logger.Logger import Logger
 import numpy as np
-from torch import optim
+import argparse
 
+from data.rotation import data_helper
+from data.data_helper import available_datasets
+from Logger.Logger import Logger
+from my_model.MyModel import MyModel, model_dictionary
 
 class MyTrainingArgument(argparse.ArgumentParser):
     """Store the arguments coming from the console.
@@ -40,8 +37,8 @@ class MyTrainingArgument(argparse.ArgumentParser):
         :return:
         """
         # Arguments for training
-        self.add_argument("--network", choices=model_factory.nets_map.keys(), help="Which network to use",
-                            default="caffenet")
+        self.add_argument("--network", choices=model_dictionary.keys(), help="Which network to use",
+                          default="caffenet")
         self.add_argument("--source", choices=available_datasets, help="Source", nargs='+')
         self.add_argument("--target", choices=available_datasets, help="Target")
         self.add_argument("--n_classes", "-c", type=int, default=31, help="Number of classes")
@@ -86,30 +83,6 @@ class MyTrainingArgument(argparse.ArgumentParser):
         self.add_argument("--tile_random_grayscale", default=0.1, type=float,
                             help="Chance of randomly greyscaling a tile")
 
-
-class MyModel:
-    """Return the network according to the number of output classes and the name of the
-    back bone network.
-
-    Implementation:
-        model
-    """
-    def __init__(self, my_training_arguments):
-        """
-
-        :param my_training_arguments:Include name of network,  the number of unsupervised classes and
-        supervised classes.
-        """
-        self.model = model_factory.get_network(my_training_arguments.training_arguments.network)(
-            # Jigsaw class of 0 refers to original picture, apart from the original one, there
-            # are another 30 classes, in total 31 classes of jigsaw pictures.
-            # jigsaw_classes=training_arguments.jigsaw_n_classes + 1,
-
-            # When using rotation technology as the unsupervised task, there are in total
-            # 4 classes, which are original one, 90, 180, 270 degree.
-            jigsaw_classes = 4,
-            classes=my_training_arguments.training_arguments.n_classes
-        )
 
 
 class MyDataLoader:
@@ -162,8 +135,6 @@ class MyScheduler:
     def __init__(self, my_training_arguments, my_optimizer):
         step_size = int(my_training_arguments.training_arguments.epochs * .8)
         self.scheduler = optim.lr_scheduler.StepLR(my_optimizer.optimizer, step_size)
-
-
 
 
 class Trainer:

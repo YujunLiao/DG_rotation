@@ -1,4 +1,4 @@
-models/pretrained/*
+my_model/pretrained/parameters/*
 *.ipynb
 */__pycache__/*
 .idea/*

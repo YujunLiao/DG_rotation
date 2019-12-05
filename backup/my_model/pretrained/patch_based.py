@@ -2,10 +2,9 @@ from collections import OrderedDict
 from itertools import chain
 
 import torch
-from IPython.core.debugger import set_trace
-from torch import nn as nn, cat
+from torch import nn as nn
 
-from models.alexnet import Id
+from my_model.pretrained.alexnet import Id
 
 
 class AlexNetCaffePatches(nn.Module):
@@ -120,8 +119,8 @@ class AlexNetCaffePatches(nn.Module):
 
 def caffenet_patches(jigsaw_classes, classes):
     model = AlexNetCaffePatches(jigsaw_classes, classes)
-    #state_dict = torch.load("models/pretrained/alexnet_caffe.pth.tar")
-    state_dict = torch.load("pretrained/alexnet_caffe.pth.tar")
+    #state_dict = torch.load("models/parameters/alexnet_caffe.pth.tar")
+    state_dict = torch.load("parameters/alexnet_caffe.pth.tar")
 
 
     del state_dict["classifier.fc8.weight"]

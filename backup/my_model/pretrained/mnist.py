@@ -41,7 +41,7 @@ class MnistModel(nn.Module):
         self.class_classifier = nn.Linear(outfeats, n_classes)
 
     def get_params(self, base_lr):
-        raise "No pretrained exists for LeNet - use train all"
+        raise "No parameters exists for LeNet - use train all"
 
     def is_patch_based(self):
         return False
