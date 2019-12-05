@@ -4,7 +4,6 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
-from data import StandardDataset
 from data.rotation.JigsawLoader import JigsawDataset, JigsawTestDataset, get_split_dataset_info, _dataset_info, JigsawTestDatasetMultiple
 from data.concat_dataset import ConcatDataset
 

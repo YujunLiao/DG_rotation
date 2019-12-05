@@ -69,7 +69,7 @@ class JigsawDataset(data.Dataset):
         #         :param x:
         #         :return:
         #         """
-        #         return torchvision.Logger.make_grid(x, self.grid_size, padding=0)
+        #         return torchvision.logger.make_grid(x, self.grid_size, padding=0)
         #     self.returnFunc = make_grid
         #
 

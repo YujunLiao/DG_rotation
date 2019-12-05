@@ -5,7 +5,7 @@ from itertools import chain
 import torch
 from torch import nn as nn
 
-from my_model.pretrained.alexnet import Id
+from trainer_utils.model.pretrained.alexnet import Id
 
 
 class AlexNetCaffe(nn.Module):
@@ -49,15 +49,17 @@ class AlexNetCaffe(nn.Module):
         #     nn.Linear(1024, domains))
 
     def get_params(self, base_lr):
-        return [{"params": self.features.parameters(), "lr": 0.},
-                {
-                    "params": chain(
-                    self.classifier.parameters(), self.jigsaw_classifier.parameters(),
+        return [
+            {"params": self.features.parameters(), "lr": 0.},
+            {
+                "params": chain(
+                    self.classifier.parameters(),
+                    self.jigsaw_classifier.parameters(),
                     self.class_classifier.parameters()#, self.domain_classifier.parameters()
-                                 ),
-                    "lr": base_lr
-                }
-                ]
+                ),
+                "lr": base_lr
+            }
+        ]
 
     def is_patch_based(self):
         return False

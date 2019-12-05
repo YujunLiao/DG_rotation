@@ -48,7 +48,7 @@ class Logger():
                                                                 acc_string, total_samples))
             # update tf log
             if self.tf_logger:
-                for k, v in losses.items(): self.tf_logger.scalar_summary("train/loss_%s" % k, v, self.current_iter)
+                for k, v in losses.items(): self.tf_logger.scalar_summary("trainer/loss_%s" % k, v, self.current_iter)
 
     def _clean_epoch_stats(self):
         self.epoch_stats = {}

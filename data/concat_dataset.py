@@ -4,7 +4,7 @@ import warnings
 from torch.utils.data import Dataset
 
 # This is a small variant of the ConcatDataset class, which also returns dataset index
-from data.JigsawLoader import JigsawTestDatasetMultiple
+from data.rotation.JigsawLoader import JigsawTestDatasetMultiple
 
 
 class ConcatDataset(Dataset):
