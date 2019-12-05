@@ -1,5 +1,5 @@
 import argparse
-from data.rotation.data_helper import available_datasets
+from trainer_utils.data_loader.helper.data_helper import available_datasets
 from trainer_utils.model.MyModel import model_dictionary
 
 

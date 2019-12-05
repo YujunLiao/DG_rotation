@@ -26,12 +26,12 @@ class Trainer:
         self.classify_only_ordered_images_or_not = self.training_arguments.classify_only_sane
         self.number_of_images_classes = self.training_arguments.n_classes
 
-        self.source_data_loader = my_data_loader.source_data_loader
+        self.train_data_loader = my_data_loader.train_data_loader
         self.validation_data_loader = my_data_loader.validation_data_loader
         self.test_data_loader = my_data_loader.test_data_loader
         ##
         self.test_loaders = {"val": self.validation_data_loader, "test": self.test_data_loader}
-        print("Dataset size: trainer %d, val %d, test %d" % (len(self.source_data_loader.dataset), len(self.validation_data_loader.dataset), len(self.test_data_loader.dataset)))
+        print("Dataset size: trainer %d, val %d, test %d" % (len(self.train_data_loader.dataset), len(self.validation_data_loader.dataset), len(self.test_data_loader.dataset)))
 
         self.optimizer = my_optimizer.optimizer
         self.scheduler = my_scheduler.scheduler
@@ -49,7 +49,7 @@ class Trainer:
         self.model.train()
 
         # domain_index_of_images_in_this_patch is target domain index in the source domain list
-        for i, ((data, rotation_label, class_label), domain_index_of_images_in_this_patch) in enumerate(self.source_data_loader):
+        for i, ((data, rotation_label, class_label), domain_index_of_images_in_this_patch) in enumerate(self.train_data_loader):
             data, rotation_label, class_label, domain_index_of_images_in_this_patch = data.to(self.device), rotation_label.to(self.device), class_label.to(self.device), domain_index_of_images_in_this_patch.to(self.device)
             self.optimizer.zero_grad()
 
@@ -81,7 +81,7 @@ class Trainer:
 
             self.logger.log(
                 i,
-                len(self.source_data_loader),
+                len(self.train_data_loader),
                 {
                     "jigsaw": unsupervised_task_loss.item(),
                     "class": supervised_task_loss.item()

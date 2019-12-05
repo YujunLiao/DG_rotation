@@ -12,7 +12,7 @@ model_dictionary = {
 
 
 class MyModel:
-    """Return the network according to the number of output classes and the name of the
+    """Return pre-trained model.
     back bone network.
 
     Implementation:
@@ -21,8 +21,8 @@ class MyModel:
     def __init__(self, my_training_arguments):
         """
 
-        :param my_training_arguments:Include name of network,  the number of unsupervised classes and
-        supervised classes.
+        :param my_training_arguments:Name of network, the number of classes of unsupervised and
+        supervised task.
         """
         self._get_model_function = model_dictionary[my_training_arguments.training_arguments.network]
         self.model = self._get_model_function(
