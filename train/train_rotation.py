@@ -14,8 +14,7 @@ from data.rotation import data_helper
 # from IPython.core.debugger import set_trace
 from data.data_helper import available_datasets
 from models import model_factory
-from optimizer.optimizer_helper import get_optim_and_scheduler
-from utils.Logger import Logger
+from Logger.Logger import Logger
 import numpy as np
 from torch import optim
 
@@ -172,85 +171,78 @@ class Trainer:
         self.training_arguments = my_training_arguments.training_arguments
         self.device = device
         self.model = my_model.model.to(device)
-        self.jig_weight = self.training_arguments.jig_weight # Weight for the jigsaw puzzle
-        self.only_non_scrambled = self.training_arguments.classify_only_sane # if true only classify the orderd images
-        self.n_classes = self.training_arguments.n_classes
+        ##
+        self.unsupervised_task_loss_weight = self.training_arguments.jig_weight
+        self.classify_only_ordered_images_or_not = self.training_arguments.classify_only_sane
+        self.number_of_images_classes = self.training_arguments.n_classes
 
-        # TODO(LYJ):patch based
-        # self.source_loader, self.val_loader = data_helper.get_train_dataloader(training_arguments, patches=self.model.is_patch_based())
-        # self.target_loader = data_helper.get_val_dataloader(training_arguments, patches=self.model.is_patch_based())
-        self.source_loader = my_data_loader.source_data_loader
-        self.val_loader = my_data_loader.validation_data_loader
-        self.target_loader = my_data_loader.test_data_loader
+        self.source_data_loader = my_data_loader.source_data_loader
+        self.validation_data_loader = my_data_loader.validation_data_loader
+        self.test_data_loader = my_data_loader.test_data_loader
+        ##
+        self.test_loaders = {"val": self.validation_data_loader, "test": self.test_data_loader}
+        print("Dataset size: train %d, val %d, test %d" % (len(self.source_data_loader.dataset), len(self.validation_data_loader.dataset), len(self.test_data_loader.dataset)))
 
-        self.test_loaders = {"val": self.val_loader, "test": self.target_loader}
-        print("Dataset size: train %d, val %d, test %d" % (len(self.source_loader.dataset), len(self.val_loader.dataset), len(self.target_loader.dataset)))
-
-        # self.optimizer, self.scheduler = get_optim_and_scheduler(self.model, self.training_arguments.epochs, self.training_arguments.learning_rate, self.training_arguments.train_all, nesterov=self.training_arguments.nesterov)
         self.optimizer = my_optimizer.optimizer
         self.scheduler = my_scheduler.scheduler
 
         if self.training_arguments.target in self.training_arguments.source:
-            self.target_id = self.training_arguments.source.index(self.training_arguments.target)
-            print("Target in source: %d" % self.target_id)
+            self.target_domain_index = self.training_arguments.source.index(self.training_arguments.target)
+            print("Target in source: %d" % self.target_domain_index)
             print(self.training_arguments.source)
         else:
-            self.target_id = None
+            self.target_domain_index = None
 
     def _do_epoch(self):
         criterion = nn.CrossEntropyLoss()
         # Set the mode of the model to train, then the parameters can begin to be trained
         self.model.train()
 
-        # Code for rotation
-
-
-        # Code for Jiasaw
-        # d_idx is domain index
-        for it, ((data, jig_l, class_l), d_idx) in enumerate(self.source_loader):
-            data, jig_l, class_l, d_idx = data.to(self.device), jig_l.to(self.device), class_l.to(self.device), d_idx.to(self.device)
-            # absolute_iter_count = it + self.current_epoch * self.len_dataloader
-            # p = float(absolute_iter_count) / self.args.epochs / self.len_dataloader
-            # lambda_val = 2. / (1. + np.exp(-10 * p)) - 1
-            # if domain_error > 2.0:
-            #     lambda_val  = 0
-            # print("Shutting down LAMBDA to prevent implosion")
-
+        # domain_index_of_images_in_this_patch is target domain index in the source domain list
+        for i, ((data, rotation_label, class_label), domain_index_of_images_in_this_patch) in enumerate(self.source_data_loader):
+            data, rotation_label, class_label, domain_index_of_images_in_this_patch = data.to(self.device), rotation_label.to(self.device), class_label.to(self.device), domain_index_of_images_in_this_patch.to(self.device)
             self.optimizer.zero_grad()
 
-            jigsaw_logit, class_logit = self.model(data)  # , lambda_val=lambda_val)
-            jigsaw_loss = criterion(jigsaw_logit, jig_l)
-            # domain_loss = criterion(domain_logit, d_idx)
-            # domain_error = domain_loss.item()
-            if self.only_non_scrambled:
-                if self.target_id is not None:
-                    idx = (jig_l == 0) & (d_idx != self.target_id)
-                    class_loss = criterion(class_logit[idx], class_l[idx])
-                else:
-                    class_loss = criterion(class_logit[jig_l == 0], class_l[jig_l == 0])
+            rotation_predict_label, class_predict_label = self.model(data)  # , lambda_val=lambda_val)
+            unsupervised_task_loss = criterion(rotation_predict_label, rotation_label)
 
-            elif self.target_id:
-                class_loss = criterion(class_logit[d_idx != self.target_id], class_l[d_idx != self.target_id])
+            if self.classify_only_ordered_images_or_not:
+                if self.target_domain_index is not None:
+                    # images_should_be_selected_or_not is a 128*1 list containing True or False.
+                    images_should_be_selected_or_not = (rotation_label == 0) & (domain_index_of_images_in_this_patch != self.target_domain_index)
+                    supervised_task_loss = criterion(
+                        class_predict_label[images_should_be_selected_or_not],
+                        class_label[images_should_be_selected_or_not]
+                    )
+                else:
+                    supervised_task_loss = criterion(class_predict_label[rotation_label == 0], class_label[rotation_label == 0])
+
+            elif self.target_domain_index:
+                supervised_task_loss = criterion(class_predict_label[domain_index_of_images_in_this_patch != self.target_domain_index], class_label[domain_index_of_images_in_this_patch != self.target_domain_index])
             else:
-                class_loss = criterion(class_logit, class_l)
-            _, cls_pred = class_logit.max(dim=1)
-            _, jig_pred = jigsaw_logit.max(dim=1)
+                supervised_task_loss = criterion(class_predict_label, class_label)
+            _, cls_pred = class_predict_label.max(dim=1)
+            _, jig_pred = rotation_predict_label.max(dim=1)
             # _, domain_pred = domain_logit.max(dim=1)
-            loss = class_loss + jigsaw_loss * self.jig_weight  # + 0.1 * domain_loss
+            loss = supervised_task_loss + unsupervised_task_loss * self.unsupervised_task_loss_weight
 
             loss.backward()
             self.optimizer.step()
 
-            self.logger.log(it, len(self.source_loader),
-                            {"jigsaw": jigsaw_loss.item(), "class": class_loss.item()  # , "domain": domain_loss.item()
-                             },
-                            # ,"lambda": lambda_val},
-                            {"jigsaw": torch.sum(jig_pred == jig_l.data).item(),
-                             "class": torch.sum(cls_pred == class_l.data).item(),
-                             # "domain": torch.sum(domain_pred == d_idx.data).item()
-                             },
-                            data.shape[0])
-            del loss, class_loss, jigsaw_loss, jigsaw_logit, class_logit
+            self.logger.log(
+                i,
+                len(self.source_data_loader),
+                {
+                    "jigsaw": unsupervised_task_loss.item(),
+                    "class": supervised_task_loss.item()
+                 },
+                {
+                    "jigsaw": torch.sum(jig_pred == rotation_label.data).item(),
+                    "class": torch.sum(cls_pred == class_label.data).item(),
+                 },
+                data.shape[0]
+            )
+            del loss, supervised_task_loss, unsupervised_task_loss, rotation_predict_label, class_predict_label
         self.model.eval()
         with torch.no_grad():
             for phase, loader in self.test_loaders.items():
@@ -287,7 +279,7 @@ class Trainer:
         for it, ((data, jig_l, class_l), d_idx) in enumerate(loader):
             data, jig_l, class_l = data.to(self.device), jig_l.to(self.device), class_l.to(self.device)
             n_permutations = data.shape[1]
-            class_logits = torch.zeros(n_permutations, data.shape[0], self.n_classes).to(self.device)
+            class_logits = torch.zeros(n_permutations, data.shape[0], self.number_of_images_classes).to(self.device)
             for k in range(n_permutations):
                 class_logits[k] = F.softmax(self.model(data[:, k])[1], dim=1)
             class_logits[0] *= 4 * n_permutations  # bias more the original image
