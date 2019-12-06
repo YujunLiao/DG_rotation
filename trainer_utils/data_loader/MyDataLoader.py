@@ -1,15 +1,13 @@
-from trainer_utils.data_loader.helper import data_helper
-from torchvision import transforms
+# from torchvision import transforms
 import torch
 from torch.utils.data import DataLoader
-from trainer_utils.data_loader.helper.data_helper import get_train_transformers, get_val_transformer
-from trainer_utils.data_loader.helper.JigsawLoader import get_split_dataset_info
-from os.path import join, dirname
-from trainer_utils.data_loader.helper.JigsawLoader import JigsawDataset, JigsawTestDataset, get_split_dataset_info, _dataset_info
-from trainer_utils.data_loader.helper.concat_dataset import ConcatDataset
-from trainer_utils.data_loader.helper.data_helper import Subset
-from random import sample, random
-from trainer_utils.data_loader.dataset.MyDataset import MyDataset
+# from trainer_utils.data_loader.helper.JigsawLoader import get_split_dataset_info
+# from os.path import join, dirname
+# from trainer_utils.data_loader.helper.JigsawLoader import JigsawDataset, JigsawTestDataset, get_split_dataset_info, _dataset_info
+# from trainer_utils.data_loader.helper.concat_dataset import ConcatDataset
+# from random import sample, random
+from trainer_utils.data_loader.rotation_dataset.RotationDataset import RotationDataset
+
 
 class MyDataLoader:
     """Return train, validation, test data loaders.
@@ -43,10 +41,15 @@ class MyDataLoader:
         #     is_patch_based_or_not
         # )
 
-        my_dataset=MyDataset(my_training_arguments, is_patch_based_or_not)
-        train_dataset = my_dataset.train_dataset
-        validation_dataset = my_dataset.validation_dataset
-        test_dataset = my_dataset.test_dataset
+        # my_dataset=MyDataset(my_training_arguments, is_patch_based_or_not)
+        # train_dataset = my_dataset.train_dataset
+        # validation_dataset = my_dataset.validation_dataset
+        # test_dataset = my_dataset.test_dataset
+
+        rotation_dataset = RotationDataset(my_training_arguments, is_patch_based_or_not)
+        train_dataset=rotation_dataset.train_dataset
+        validation_dataset=rotation_dataset.validation_dataset
+        test_dataset=rotation_dataset.test_dataset
 
         # dataset =
         # val_dataset = ConcatDataset(validation_dataset_list)

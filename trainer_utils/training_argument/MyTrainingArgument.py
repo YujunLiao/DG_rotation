@@ -1,5 +1,5 @@
 import argparse
-from trainer_utils.data_loader.helper.data_helper import available_datasets
+from trainer_utils.data_loader.dataset.MyDataset import available_domains
 from trainer_utils.model.MyModel import model_dictionary
 
 
@@ -26,8 +26,8 @@ class MyTrainingArgument(argparse.ArgumentParser):
         # Arguments for training
         self.add_argument("--network", choices=model_dictionary.keys(), help="Which network to use",
                           default="caffenet")
-        self.add_argument("--source", choices=available_datasets, help="Source", nargs='+')
-        self.add_argument("--target", choices=available_datasets, help="Target")
+        self.add_argument("--source", choices=available_domains, help="Source", nargs='+')
+        self.add_argument("--target", choices=available_domains, help="Target")
         self.add_argument("--n_classes", "-c", type=int, default=31, help="Number of classes")
         # parser.add_argument("--jigsaw_n_classes", "-jc", type=int, default=31, help="Number of classes for the jigsaw task")
         self.add_argument("--jig_weight", type=float, default=0.1, help="Weight for the jigsaw puzzle")
