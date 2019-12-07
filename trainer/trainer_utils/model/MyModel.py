@@ -1,6 +1,6 @@
 # from model.pretrained import caffenet, resnet, mnist, alexnet
-from trainer_utils.model.pretrained import resnet
-from trainer_utils.model.pretrained import caffenet
+from trainer.trainer_utils.model.pretrained import resnet
+from trainer.trainer_utils.model.pretrained import caffenet
 
 model_dictionary = {
     'caffenet': caffenet.get_caffenet,

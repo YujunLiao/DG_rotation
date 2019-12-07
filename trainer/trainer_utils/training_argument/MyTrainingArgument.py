@@ -1,6 +1,6 @@
 import argparse
-from trainer_utils.data_loader.dataset.MyDataset import available_domains
-from trainer_utils.model.MyModel import model_dictionary
+from trainer.trainer_utils.data_loader.dataset.MyDataset import available_domains
+from trainer.trainer_utils.model.MyModel import model_dictionary
 
 
 class MyTrainingArgument(argparse.ArgumentParser):

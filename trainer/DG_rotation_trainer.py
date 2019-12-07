@@ -2,18 +2,19 @@
 # Complex input should be an entity of class.
 # Name of method in a class should contain an obvious verbal, like get_something().
 # set attribute within __init__(self) function.
+# 每天学一点，每天改一点
 
 import torch
 from torch import nn
 from torch.nn import functional as F
 
-from trainer_utils.model.MyModel import MyModel
+from trainer.trainer_utils.model.MyModel import MyModel
 
-from trainer_utils.logger.Logger import Logger
-from trainer_utils.training_argument.MyTrainingArgument import MyTrainingArgument
-from trainer_utils.data_loader.MyDataLoader import MyDataLoader
-from trainer_utils.optimizer.MyOptimizer import MyOptimizer
-from trainer_utils.scheduler.MyScheduler import MyScheduler
+from trainer.trainer_utils.logger.Logger import Logger
+from trainer.trainer_utils.training_argument.MyTrainingArgument import MyTrainingArgument
+from trainer.trainer_utils.data_loader.MyDataLoader import MyDataLoader
+from trainer.trainer_utils.optimizer.MyOptimizer import MyOptimizer
+from trainer.trainer_utils.scheduler.MyScheduler import MyScheduler
 
 
 class Trainer:

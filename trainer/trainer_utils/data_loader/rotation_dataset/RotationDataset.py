@@ -4,12 +4,11 @@ import torch.utils.data as data
 # import torchvision
 import torchvision.transforms as transforms
 from PIL import Image
-from random import sample, random
+from random import random
 import torch
 import bisect
 import warnings
-from trainer_utils.data_loader.dataset.MyDataset import MyDataset
-from trainer_utils.data_loader.helper.data_helper import get_train_transformers, get_val_transformer
+from trainer.trainer_utils.data_loader.dataset.MyDataset import MyDataset
 from torch.utils.data import Dataset
 
 
@@ -19,8 +18,8 @@ class RotationDataset():
         training_arguments = my_training_arguments.training_arguments
         max_number_of_train_dataset = training_arguments.limit_source
         max_number_of_test_dataset = training_arguments.limit_target
-        img_transformer, tile_transformer = get_train_transformers(training_arguments)
-        val_transformer = get_val_transformer(training_arguments)
+        img_transformer, tile_transformer = self._get_train_transformers(training_arguments)
+        val_transformer = self._get_val_transformer(training_arguments)
 
         train_dataset = RotationTrainDataset(
             my_dataset.train_dataset['train_data_paths'],
@@ -63,6 +62,28 @@ class RotationDataset():
             print("Using %d subset of val dataset" % training_arguments.limit_target)
 
         self.test_dataset = ConcatDataset([test_dataset])
+
+    def _get_train_transformers(self, training_arguments):
+        img_tr = [transforms.RandomResizedCrop((int(training_arguments.image_size), int(training_arguments.image_size)),
+                                               (training_arguments.min_scale, training_arguments.max_scale))]
+        if training_arguments.random_horiz_flip > 0.0:
+            img_tr.append(transforms.RandomHorizontalFlip(training_arguments.random_horiz_flip))
+        if training_arguments.jitter > 0.0:
+            img_tr.append(transforms.ColorJitter(brightness=training_arguments.jitter, contrast=training_arguments.jitter, saturation=training_arguments.jitter,
+                                                 hue=min(0.5, training_arguments.jitter)))
+
+        tile_tr = []
+        if training_arguments.tile_random_grayscale:
+            tile_tr.append(transforms.RandomGrayscale(training_arguments.tile_random_grayscale))
+        tile_tr = tile_tr + [transforms.ToTensor(),
+                             transforms.Normalize([0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
+
+        return transforms.Compose(img_tr), transforms.Compose(tile_tr)
+
+    def _get_val_transformer(self, training_arguments):
+        img_tr = [transforms.Resize((training_arguments.image_size, training_arguments.image_size)), transforms.ToTensor(),
+                  transforms.Normalize([0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
+        return transforms.Compose(img_tr)
 
 
 class RotationTrainDataset(data.Dataset):
