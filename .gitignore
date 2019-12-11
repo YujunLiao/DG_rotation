@@ -1,4 +1,4 @@
-trainer/trainer_utils/model/pretrained/parameters/*
+trainer_utils/model/pretrained/parameters/*
 *.ipynb
 */__pycache__/*
 .idea/*
