@@ -233,8 +233,9 @@ if __name__ == "__main__":
                 str(my_training_arguments.training_arguments.bias_whole_image)+ '_'+\
                 my_training_arguments.training_arguments.target
             )
-
+            print('--------------------------------------------------------')
             print(my_training_arguments.training_arguments)
+            print('--------------------------------------------------------')
             for i in range(int(my_training_arguments.training_arguments.repeat_times)):
                 lazy_train(my_training_arguments, output_manager)
 

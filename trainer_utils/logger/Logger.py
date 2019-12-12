@@ -24,6 +24,7 @@ class Logger():
         if args.tf_logger:
             self.tf_logger = TFLogger(log_path)
             print("Saving to %s" % log_path)
+            print('--------------------------------------------------------')
         else:
             self.tf_logger = None
 
