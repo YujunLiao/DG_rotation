@@ -3,6 +3,10 @@ from trainer_utils.data_loader.dataset.MyDataset import available_domains
 from trainer_utils.model.MyModel import model_dictionary
 
 
+def parameters_lists(arg):
+    return [float(x) for x in arg.split(',')]
+
+
 class MyTrainingArgument(argparse.ArgumentParser):
     """Store the arguments coming from the console.
 
@@ -15,6 +19,7 @@ class MyTrainingArgument(argparse.ArgumentParser):
             description="Script to launch jigsaw training",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter
         )
+
         self._get_arguments_from_console()
         self.training_arguments = self.parse_args()
 
@@ -70,3 +75,11 @@ class MyTrainingArgument(argparse.ArgumentParser):
         self.add_argument("--jitter", default=0.0, type=float, help="Color jitter amount")
         self.add_argument("--tile_random_grayscale", default=0.1, type=float,
                             help="Chance of randomly greyscaling a tile")
+
+
+        # Arguments for lazy training
+        self.add_argument("--domains_list", nargs='+')
+        self.add_argument("--target_domain_list", nargs='+')
+        self.add_argument("--parameters_lists", type=parameters_lists, nargs='+')
+        # self.add_argument("--parameters_lists", type=tuple, nargs='+')
+

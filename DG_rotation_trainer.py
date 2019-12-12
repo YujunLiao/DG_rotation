@@ -207,20 +207,24 @@ if __name__ == "__main__":
     # my_training_arguments.training_arguments.classify_only_sane=True
     my_training_arguments.training_arguments.TTA = False
     my_training_arguments.training_arguments.nesterov = False
-    print(my_training_arguments.training_arguments)
 
+    for parameter_pair in my_training_arguments.training_arguments.parameters_lists:
 
-    my_training_arguments.training_arguments.jig_weight=0.8
-    for bias_whole_image in [0.3]:
-        my_training_arguments.training_arguments.bias_whole_image=bias_whole_image
+        my_training_arguments.training_arguments.jig_weight=parameter_pair[0]
+        my_training_arguments.training_arguments.bias_whole_image=parameter_pair[1]
         # lazy_man = LazyMan(['CALTECH', 'LABELME', 'PASCAL', 'SUN'])
+        # lazy_man = LazyMan(
+        #     ['art_painting', 'cartoon', 'sketch', 'photo'],
+        #     ['art_painting', 'cartoon', 'sketch', 'photo']
+        # )
         lazy_man = LazyMan(
-            ['art_painting', 'cartoon', 'sketch', 'photo'],
-            ['art_painting', 'cartoon', 'sketch', 'photo']
+            my_training_arguments.training_arguments.domains_list,
+            my_training_arguments.training_arguments.target_domain_list
         )
-        for item in lazy_man.source_and_target_domain_permutation_list:
-            my_training_arguments.training_arguments.source=item['source_domain']
-            my_training_arguments.training_arguments.target=item['target_domain']
+
+        for source_and_target_domain in lazy_man.source_and_target_domain_permutation_list:
+            my_training_arguments.training_arguments.source=source_and_target_domain['source_domain']
+            my_training_arguments.training_arguments.target=source_and_target_domain['target_domain']
 
             output_manager = OutputManager(
                 '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' +\
@@ -229,6 +233,7 @@ if __name__ == "__main__":
                 my_training_arguments.training_arguments.target
             )
 
+            print(my_training_arguments.training_arguments)
             for i in range(3):
                 lazy_train(my_training_arguments, output_manager)
 
