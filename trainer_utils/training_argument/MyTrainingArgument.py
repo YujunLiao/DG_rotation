@@ -82,4 +82,6 @@ class MyTrainingArgument(argparse.ArgumentParser):
         self.add_argument("--target_domain_list", nargs='+')
         self.add_argument("--parameters_lists", type=parameters_lists, nargs='+')
         # self.add_argument("--parameters_lists", type=tuple, nargs='+')
+        self.add_argument("--repeat_times", type=int)
+
 

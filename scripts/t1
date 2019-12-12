@@ -6,6 +6,7 @@ CUDA_VISIBLE_DEVICES=0 \
 --domains_list photo  sketch cartoon art_painting \
 --target_domain_list art_painting cartoon \
 --parameters_lists 0.8,0.1   0.2,0.3 \
+--repeat_times 1 \
 --network resnet18  --epochs 2 \
 --classify_only_sane True  --TTA False --nesterov False \
 --batch_size 128 --n_classes 7  --image_size 222 \

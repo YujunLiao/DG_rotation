@@ -14,7 +14,7 @@ class LazyMan:
         for target_domain in self.target_domain_list:
             source_domain = []
             for i in self.domain_list:
-                if i is not target_domain:
+                if i != target_domain:
                     source_domain.append(i)
             domain_dictionary = {
                 'target_domain': target_domain,

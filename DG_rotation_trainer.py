@@ -159,7 +159,6 @@ class Trainer:
         val_res = self.results["val"]
         test_res = self.results["test"]
         idx_best = val_res.argmax()
-        self.logger.save_best(test_res[idx_best], test_res.max())
 
         # print("Best val %g, corresponding test %g - best test: %g" % (val_res.max(), test_res[idx_best], test_res.max()))
         print('--------------------------------------------------------')
@@ -172,11 +171,13 @@ class Trainer:
         print("Highest accuracy on test set appears on epoch ",  test_res.argmax().data)
         print("Accuracy on test set when the accuracy on validation set is highest:%.3f" %test_res[idx_best])
         print("Highest accuracy on test set:%.3f" %test_res.max())
+        self.logger.save_best(test_res[idx_best], test_res.max())
 
         self.output_manager.write_to_output_file([
             '--------------------------------------------------------',
             str(strftime("%Y-%m-%d %H:%M:%S", localtime()) ),
             self.training_arguments.target,
+            self.training_arguments.source,
             "jigweight:" + str(self.unsupervised_task_loss_weight),
             "bias_hole_image:", str(self.training_arguments.bias_whole_image),
             "only_classify the ordered image:"+str(self.training_arguments.classify_only_sane),
@@ -234,7 +235,7 @@ if __name__ == "__main__":
             )
 
             print(my_training_arguments.training_arguments)
-            for i in range(3):
+            for i in range(int(my_training_arguments.training_arguments.repeat_times)):
                 lazy_train(my_training_arguments, output_manager)
 
 
