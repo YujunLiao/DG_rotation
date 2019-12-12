@@ -163,6 +163,7 @@ class Trainer:
         # print("Best val %g, corresponding test %g - best test: %g" % (val_res.max(), test_res[idx_best], test_res.max()))
         print('--------------------------------------------------------')
         print(self.training_arguments.target)
+        print(self.training_arguments.source)
         print("jigweight:", self.unsupervised_task_loss_weight)
         print("bias_hole_image:", self.training_arguments.bias_whole_image)
         print("only_classify the ordered image:", self.training_arguments.classify_only_sane,
@@ -177,9 +178,8 @@ class Trainer:
             '--------------------------------------------------------',
             str(strftime("%Y-%m-%d %H:%M:%S", localtime()) ),
             self.training_arguments.target,
-            self.training_arguments.source,
             "jigweight:" + str(self.unsupervised_task_loss_weight),
-            "bias_hole_image:", str(self.training_arguments.bias_whole_image),
+            "bias_hole_image:"+ str(self.training_arguments.bias_whole_image),
             "only_classify the ordered image:"+str(self.training_arguments.classify_only_sane),
             "Highest accuracy on validation set appears on epoch "+ str(val_res.argmax().data),
             "Highest accuracy on test set appears on epoch "+ str(test_res.argmax().data),

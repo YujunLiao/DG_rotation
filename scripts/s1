@@ -1,6 +1,6 @@
 # temp DG_rotation_trainer
 # train resnet-rotation pacs
-CUDA_VISIBLE_DEVICES=0 \
+CUDA_VISIBLE_DEVICES=$1 \
 /home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 /home/giorgio/Files/pycharm_project/DG_rotation/DG_rotation_trainer.py \
 --domains_list photo  sketch cartoon art_painting \
