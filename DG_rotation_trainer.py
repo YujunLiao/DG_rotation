@@ -162,6 +162,7 @@ class Trainer:
 
         # print("Best val %g, corresponding test %g - best test: %g" % (val_res.max(), test_res[idx_best], test_res.max()))
         print('--------------------------------------------------------')
+        print(strftime("%Y-%m-%d %H:%M:%S", localtime()))
         print(self.training_arguments.target)
         print(self.training_arguments.source)
         print("jigweight:", self.unsupervised_task_loss_weight)
