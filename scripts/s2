@@ -11,12 +11,12 @@ CUDA_VISIBLE_DEVICES=$1 \
 --entropy_loss_weight 0.1 \
 --repeat_times 1 \
 --network resnet18  --epochs 2 \
---classify_only_sane True  --TTA False --nesterov False \
+--classify_only_ordered_images_or_not True  --TTA False --nesterov False \
 --batch_size 128 --n_classes 7  --image_size 222 \
 --learning_rate 0.001 --val_size 0.1  \
 --train_all True --folder_name test  \
 --min_scale 0.8 --max_scale 1.0 --random_horiz_flip 0.5 --jitter 0.4 --tile_random_grayscale 0.1 \
-#--jig_weight 0.8  --bias_whole_image 0.3 \
+#--unsupervised_task_weight 0.8  --bias_whole_image 0.3 \
 #--source photo  sketch cartoon  --target   art_painting  \
 
 

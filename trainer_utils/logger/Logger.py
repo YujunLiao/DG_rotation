@@ -23,8 +23,8 @@ class Logger():
         log_path = join(_log_path, folder_name, log_name)
         if args.tf_logger:
             self.tf_logger = TFLogger(log_path)
-            print("Saving to %s" % log_path)
-            print('--------------------------------------------------------')
+            # print("Saving to %s" % log_path)
+            # print('--------------------------------------------------------')
         else:
             self.tf_logger = None
 
@@ -33,7 +33,7 @@ class Logger():
         self.last_update_time = time()
         # TODO(lyj):
         self.learning_rates = learning_rates
-        print("New epoch - lr: %s" % ", ".join([str(lr) for lr in self.learning_rates]))
+        # print("New epoch - lr: %s" % ", ".join([str(lr) for lr in self.learning_rates]))
         self._clean_epoch_stats()
         if self.tf_logger:
             for n, v in enumerate(self.learning_rates):
@@ -77,14 +77,14 @@ class Logger():
         if args.folder_name:
             folder_name = join(args.folder_name, folder_name)
         log_name = "eps%d_bs%d_lr%g_class%d_jigClass%d_jigWeight%g" % (args.epochs, args.batch_size, args.learning_rate, args.n_classes,
-                                                                   4, args.jig_weight)
+                                                                   4, args.unsupervised_task_weight)
         # if args.ooo_weight > 0:
         #     name += "_oooW%g" % args.ooo_weight
         if args.train_all:
             log_name += "_TAll"
         if args.bias_whole_image:
             log_name += "_bias%g" % args.bias_whole_image
-        if args.classify_only_sane:
+        if args.classify_only_ordered_images_or_not:
             log_name += "_classifyOnlySane"
         if args.TTA:
             log_name += "_TTA"

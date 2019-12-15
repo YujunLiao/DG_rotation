@@ -10,10 +10,10 @@
 CUDA_VISIBLE_DEVICES=0 \
 /home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 /home/giorgio/Files/pycharm_project/DG_rotation/s1.py \
---jig_weight 0.8  --bias_whole_image 0.3 \
+--unsupervised_task_weight 0.8  --bias_whole_image 0.3 \
 --source photo  sketch cartoon  --target   art_painting  \
 --network resnet18  --epochs 2 \
---classify_only_sane True  --TTA False --nesterov False \
+--classify_only_ordered_images_or_not True  --TTA False --nesterov False \
 --batch_size 128 --n_classes 7  --image_size 222 \
 --learning_rate 0.001 --val_size 0.1  \
 --train_all True --folder_name test  \
@@ -24,10 +24,10 @@ CUDA_VISIBLE_DEVICES=0 \
 #CUDA_VISIBLE_DEVICES=1 \
 #/home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 #/home/giorgio/Files/pycharm_project/DG_rotation/s1.py \
-#--jig_weight 0.8 --bias_whole_image 0.6 \
+#--unsupervised_task_weight 0.8 --bias_whole_image 0.6 \
 #--source PASCAL  CALTECH  LABELME --target SUN  \
 #--network caffenet --epochs 30 \
-#--classify_only_sane True --TTA False  --nesterov True \
+#--classify_only_ordered_images_or_not True --TTA False  --nesterov True \
 #--batch_size 128 --n_classes 5 --image_size 225 \
 #--learning_rate 0.001 --val_size 0.1 \
 #--train_all True --folder_name test \
@@ -38,10 +38,10 @@ CUDA_VISIBLE_DEVICES=0 \
 #CUDA_VISIBLE_DEVICES=1 \
 #/home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 #/home/giorgio/Files/pycharm_project/DG_rotation/DG_rotation_trainer.py \
-#--jig_weight 0.8  --bias_whole_image 0.6 \
+#--unsupervised_task_weight 0.8  --bias_whole_image 0.6 \
 #--source  LABELME  CALTECH  PASCAL --target   SUN  \
 #--network resnet18  --epochs 30 \
-#--classify_only_sane True  --TTA False --nesterov False \
+#--classify_only_ordered_images_or_not True  --TTA False --nesterov False \
 #--batch_size 128 --n_classes 5  --image_size 222 \
 #--learning_rate 0.001 --val_size 0.1  \
 #--train_all True --folder_name test  \

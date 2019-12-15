@@ -33,8 +33,7 @@ class Trainer:
         self.optimizer = my_optimizer.optimizer
         self.scheduler = my_scheduler.scheduler
 
-        self.unsupervised_task_loss_weight = self.training_arguments.jig_weight
-        self.classify_only_ordered_images_or_not = self.training_arguments.classify_only_sane
+        self.classify_only_ordered_images_or_not = self.training_arguments.classify_only_ordered_images_or_not
         self.number_of_images_classes = self.training_arguments.n_classes
         self.test_loaders = {"val": self.validation_data_loader, "test": self.test_data_loader}
 
@@ -58,7 +57,7 @@ class Trainer:
             rotation_predict_label, class_predict_label = self.model(data)  # , lambda_val=lambda_val)
             unsupervised_task_loss = criterion(rotation_predict_label, rotation_label)
 
-            if self.classify_only_ordered_images_or_not:
+            if self.training_arguments.classify_only_ordered_images_or_not:
                 if self.target_domain_index is not None:
                     # images_should_be_selected_or_not is a 128*1 list containing True or False.
                     images_should_be_selected_or_not = (rotation_label == 0) & (domain_index_of_images_in_this_patch != self.target_domain_index)
@@ -76,7 +75,7 @@ class Trainer:
             _, cls_pred = class_predict_label.max(dim=1)
             _, jig_pred = rotation_predict_label.max(dim=1)
             # _, domain_pred = domain_logit.max(dim=1)
-            loss = supervised_task_loss + unsupervised_task_loss * self.unsupervised_task_loss_weight
+            loss = supervised_task_loss + unsupervised_task_loss * self.training_arguments.unsupervised_task_weight
 
             loss.backward()
             self.optimizer.step()
@@ -146,7 +145,12 @@ class Trainer:
         return jigsaw_correct, class_correct, single_correct
 
     def do_training(self):
+        print('******************Start training**************************************')
+        print('--------------------------------------------------------')
         print("Dataset size: trainer %d, val %d, test %d" % (len(self.train_data_loader.dataset), len(self.validation_data_loader.dataset), len(self.test_data_loader.dataset)))
+        print('--------------------------------------------------------')
+        print(self.training_arguments)
+        print('--------------------------------------------------------')
 
         # TODO(lyj):
         self.logger = Logger(self.training_arguments, update_frequency=30)  # , "domain", "lambda"
@@ -154,36 +158,38 @@ class Trainer:
         for self.current_epoch in range(self.training_arguments.epochs):
             print("current epoch:%d", self.current_epoch)
             self.scheduler.step()
-            self.logger.new_epoch(self.scheduler.get_lr())
+            lrs = self.scheduler.get_lr()
+            self.logger.new_epoch(lrs)
+            print("current epoch:%d", self.current_epoch)
+            print("New epoch - lr: %s" % ", ".join([str(lr) for lr in lrs]))
             self._do_epoch()
         val_res = self.results["val"]
         test_res = self.results["test"]
         idx_best = val_res.argmax()
 
         # print("Best val %g, corresponding test %g - best test: %g" % (val_res.max(), test_res[idx_best], test_res.max()))
-        print('--------------------------------------------------------')
         print(strftime("%Y-%m-%d %H:%M:%S", localtime()))
         print(self.training_arguments.target)
         print(self.training_arguments.source)
-        print("jigweight:", self.unsupervised_task_loss_weight)
+        print("unsupervised_task_weight:", self.training_arguments.unsupervised_task_weight)
+        # TODO(change bias whole image)
         print("bias_hole_image:", self.training_arguments.bias_whole_image)
-        print("only_classify the ordered image:", self.training_arguments.classify_only_sane,
-              self.classify_only_ordered_images_or_not)
+        print("only_classify the ordered image:", self.training_arguments.classify_only_ordered_images_or_not)
         print("Highest accuracy on validation set appears on epoch ", val_res.argmax().data)
-        print("Highest accuracy on test set appears on epoch ",  test_res.argmax().data)
-        print("Accuracy on test set when the accuracy on validation set is highest:%.3f" %test_res[idx_best])
-        print("Highest accuracy on test set:%.3f" %test_res.max())
+        print("Highest accuracy on test set appears on epoch ", test_res.argmax().data)
+        print("Accuracy on test set when the accuracy on validation set is highest:%.3f" % test_res[idx_best])
+        print("Highest accuracy on test set:%.3f" % test_res.max())
         self.logger.save_best(test_res[idx_best], test_res.max())
 
         self.output_manager.write_to_output_file([
             '--------------------------------------------------------',
-            str(strftime("%Y-%m-%d %H:%M:%S", localtime()) ),
+            str(strftime("%Y-%m-%d %H:%M:%S", localtime())),
             self.training_arguments.target,
-            "jigweight:" + str(self.unsupervised_task_loss_weight),
-            "bias_hole_image:"+ str(self.training_arguments.bias_whole_image),
-            "only_classify the ordered image:"+str(self.training_arguments.classify_only_sane),
-            "Highest accuracy on validation set appears on epoch "+ str(val_res.argmax().data),
-            "Highest accuracy on test set appears on epoch "+ str(test_res.argmax().data),
+            "jigweight:" + str(self.training_arguments.unsupervised_task_weight),
+            "bias_hole_image:" + str(self.training_arguments.bias_whole_image),
+            "only_classify the ordered image:" + str(self.training_arguments.classify_only_ordered_images_or_not),
+            "Highest accuracy on validation set appears on epoch " + str(val_res.argmax().data),
+            "Highest accuracy on test set appears on epoch " + str(test_res.argmax().data),
             str("Accuracy on test set when the accuracy on validation set is highest:%.3f" % test_res[idx_best]),
             str("Highest accuracy on test set:%.3f" % test_res.max()),
             str("It took %g" % (time() - self.logger.start_time))
@@ -206,13 +212,13 @@ if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True
 
     my_training_arguments = DGRotationTrainingArgument()
-    # my_training_arguments.training_arguments.classify_only_sane=True
+    # my_training_arguments.training_arguments.classify_only_ordered_images_or_not=True
     my_training_arguments.training_arguments.TTA = False
     my_training_arguments.training_arguments.nesterov = False
 
     for parameter_pair in my_training_arguments.training_arguments.parameters_lists:
 
-        my_training_arguments.training_arguments.jig_weight=parameter_pair[0]
+        my_training_arguments.training_arguments.unsupervised_task_weight=parameter_pair[0]
         my_training_arguments.training_arguments.bias_whole_image=parameter_pair[1]
         # lazy_man = LazyMan(['CALTECH', 'LABELME', 'PASCAL', 'SUN'])
         # lazy_man = LazyMan(
@@ -229,10 +235,12 @@ if __name__ == "__main__":
             my_training_arguments.training_arguments.target=source_and_target_domain['target_domain']
 
             output_manager = OutputManager(
+                output_file_path= \
                 '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' +\
-                str(my_training_arguments.training_arguments.jig_weight)+ '_'+\
-                str(my_training_arguments.training_arguments.bias_whole_image)+ '_'+\
-                my_training_arguments.training_arguments.target
+                "DG_rotation" + \
+                my_training_arguments.training_arguments.target + \
+                str(my_training_arguments.training_arguments.unsupervised_task_weight)+ '_'+\
+                str(my_training_arguments.training_arguments.bias_whole_image)+ '_'
             )
             print('--------------------------------------------------------')
             print(my_training_arguments.training_arguments)

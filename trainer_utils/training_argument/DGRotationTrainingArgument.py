@@ -34,7 +34,7 @@ class DGRotationTrainingArgument(argparse.ArgumentParser):
         self.add_argument("--target", choices=available_domains, help="Target")
         self.add_argument("--n_classes", "-c", type=int, help="Number of classes")
         # parser.add_argument("--jigsaw_n_classes", "-jc", type=int, default=31, help="Number of classes for the jigsaw task")
-        self.add_argument("--jig_weight", type=float, help="Weight for the jigsaw puzzle")
+        self.add_argument("--unsupervised_task_weight", type=float, help="Weight for the jigsaw puzzle")
 
         self.add_argument("--ooo_weight", type=float, default=0, help="Weight for odd one out task")
         # image_size: For example, an image's size is 3*225*225
@@ -47,7 +47,7 @@ class DGRotationTrainingArgument(argparse.ArgumentParser):
         self.add_argument("--learning_rate", "-l", type=float, default=.01, help="Learning rate")
         self.add_argument("--bias_whole_image", default=None, type=float,
                           help="If set, will bias the training procedure to show more often the whole image")
-        self.add_argument("--classify_only_sane", type=bool,
+        self.add_argument("--classify_only_ordered_images_or_not", type=bool,
                           help="If true, the network will only try to classify the non scrambled images")
 
         # Argument for logger.

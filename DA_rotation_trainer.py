@@ -21,7 +21,8 @@ from trainer_utils.lazy_man.LazyMan import LazyMan
 import itertools
 import torch.nn.functional as func
 
-class Trainer:
+
+class DARotationTrainer:
     def __init__(self, my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device, output_manager):
         self.training_arguments = my_training_arguments.training_arguments
         self.device = device
@@ -36,8 +37,6 @@ class Trainer:
         self.optimizer = my_optimizer.optimizer
         self.scheduler = my_scheduler.scheduler
 
-        self.unsupervised_task_loss_weight = self.training_arguments.jig_weight
-        self.classify_only_ordered_images_or_not = self.training_arguments.classify_only_sane
         self.number_of_images_classes = self.training_arguments.n_classes
         self.test_loaders = {"val": self.validation_data_loader, "test": self.test_data_loader}
 
@@ -74,7 +73,7 @@ class Trainer:
             target_domain_unsupervised_task_loss = criterion(target_domain_rotation_predict_label, target_domain_rotation_label)
             target_domain_entropy_loss = self._entropy_loss(target_domain_class_predict_label[target_domain_rotation_label==0])
 
-            if self.classify_only_ordered_images_or_not:
+            if self.training_arguments.classify_only_ordered_images_or_not:
                 if self.target_domain_index is not None:
                     # images_should_be_selected_or_not is a 128*1 list containing True or False.
                     images_should_be_selected_or_not = (rotation_label == 0) & (domain_index_of_images_in_this_patch != self.target_domain_index)
@@ -92,7 +91,7 @@ class Trainer:
             _, cls_pred = class_predict_label.max(dim=1)
             _, jig_pred = rotation_predict_label.max(dim=1)
             # _, domain_pred = domain_logit.max(dim=1)
-            loss = supervised_task_loss + unsupervised_task_loss * self.unsupervised_task_loss_weight\
+            loss = supervised_task_loss + unsupervised_task_loss * self.training_arguments.unsupervised_task_weight\
             + target_domain_unsupervised_task_loss * self.training_arguments.target_domain_unsupervised_task_loss_weight\
             + target_domain_entropy_loss * self.training_arguments.entropy_loss_weight
 
@@ -168,29 +167,37 @@ class Trainer:
         return jigsaw_correct, class_correct, single_correct
 
     def do_training(self):
-        print("Dataset size: trainer %d, val %d, test %d" % (len(self.source_domain_train_data_loader.dataset), len(self.validation_data_loader.dataset), len(self.test_data_loader.dataset)))
+        print('******************Start training**************************************')
+        print('--------------------------------------------------------')
+        print("Dataset size: training %d, validation %d, testing %d" % (len(self.source_domain_train_data_loader.dataset), len(self.validation_data_loader.dataset), len(self.test_data_loader.dataset)))
+        print('--------------------------------------------------------')
+        print(self.training_arguments)
+        print('--------------------------------------------------------')
 
         # TODO(lyj):
         self.logger = Logger(self.training_arguments, update_frequency=30)  # , "domain", "lambda"
         self.results = {"val": torch.zeros(self.training_arguments.epochs), "test": torch.zeros(self.training_arguments.epochs)}
         for self.current_epoch in range(self.training_arguments.epochs):
-            print("current epoch:%d", self.current_epoch)
             self.scheduler.step()
-            self.logger.new_epoch(self.scheduler.get_lr())
+            lrs = self.scheduler.get_lr()
+            self.logger.new_epoch(lrs)
+            print("current epoch:%d", self.current_epoch)
+            print("New epoch - lr: %s" % ", ".join([str(lr) for lr in lrs]))
             self._do_epoch()
         val_res = self.results["val"]
         test_res = self.results["test"]
         idx_best = val_res.argmax()
 
         # print("Best val %g, corresponding test %g - best test: %g" % (val_res.max(), test_res[idx_best], test_res.max()))
-        print('--------------------------------------------------------')
         print(strftime("%Y-%m-%d %H:%M:%S", localtime()))
         print(self.training_arguments.target)
         print(self.training_arguments.source)
-        print("jigweight:", self.unsupervised_task_loss_weight)
+        print("unsupervised_task_weight:", self.training_arguments.unsupervised_task_weight)
+        # TODO(change bias whole image)
         print("bias_hole_image:", self.training_arguments.bias_whole_image)
-        print("only_classify the ordered image:", self.training_arguments.classify_only_sane,
-              self.classify_only_ordered_images_or_not)
+        print("target_rotation_weight:", self.training_arguments.target_domain_unsupervised_task_loss_weight)
+        print("entropy_weight", self.training_arguments.entropy_loss_weight)
+        print("only_classify the ordered image:", self.training_arguments.classify_only_ordered_images_or_not)
         print("Highest accuracy on validation set appears on epoch ", val_res.argmax().data)
         print("Highest accuracy on test set appears on epoch ",  test_res.argmax().data)
         print("Accuracy on test set when the accuracy on validation set is highest:%.3f" %test_res[idx_best])
@@ -201,9 +208,11 @@ class Trainer:
             '--------------------------------------------------------',
             str(strftime("%Y-%m-%d %H:%M:%S", localtime()) ),
             self.training_arguments.target,
-            "jigweight:" + str(self.unsupervised_task_loss_weight),
+            "jigweight:" + str(self.training_arguments.unsupervised_task_weight),
             "bias_hole_image:"+ str(self.training_arguments.bias_whole_image),
-            "only_classify the ordered image:"+str(self.training_arguments.classify_only_sane),
+            "target_rotation_weight:" + str(self.training_arguments.target_domain_unsupervised_task_loss_weight),
+            "entropy_weight:" + str(self.training_arguments.entropy_loss_weight),
+            "only_classify the ordered image:"+str(self.training_arguments.classify_only_ordered_images_or_not),
             "Highest accuracy on validation set appears on epoch "+ str(val_res.argmax().data),
             "Highest accuracy on test set appears on epoch "+ str(test_res.argmax().data),
             str("Accuracy on test set when the accuracy on validation set is highest:%.3f" % test_res[idx_best]),
@@ -220,47 +229,50 @@ def lazy_train(my_training_arguments, output_manager):
     my_optimizer = MyOptimizer(my_training_arguments, my_model)
     my_scheduler = MyScheduler(my_training_arguments, my_optimizer)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    trainer = Trainer(my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device, output_manager)
+    trainer = DARotationTrainer(my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device, output_manager)
     trainer.do_training()
 
 
 if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True
 
-    my_training_arguments = DARotationTrainingArgument()
-    # my_training_arguments.training_arguments.classify_only_sane=True
-    my_training_arguments.training_arguments.TTA = False
-    my_training_arguments.training_arguments.nesterov = False
 
-    for parameter_pair in my_training_arguments.training_arguments.parameters_lists:
+    DA_rotation_training_argument = DARotationTrainingArgument()
+    # my_training_arguments.training_arguments.classify_only_ordered_images_or_not=True
+    DA_rotation_training_argument.training_arguments.TTA = False
+    DA_rotation_training_argument.training_arguments.nesterov = False
 
-        my_training_arguments.training_arguments.jig_weight=parameter_pair[0]
-        my_training_arguments.training_arguments.bias_whole_image=parameter_pair[1]
+    for parameter_pair in DA_rotation_training_argument.training_arguments.parameters_lists:
+
+        DA_rotation_training_argument.training_arguments.unsupervised_task_weight=parameter_pair[0]
+        DA_rotation_training_argument.training_arguments.bias_whole_image=parameter_pair[1]
         # lazy_man = LazyMan(['CALTECH', 'LABELME', 'PASCAL', 'SUN'])
         # lazy_man = LazyMan(
         #     ['art_painting', 'cartoon', 'sketch', 'photo'],
         #     ['art_painting', 'cartoon', 'sketch', 'photo']
         # )
         lazy_man = LazyMan(
-            my_training_arguments.training_arguments.domains_list,
-            my_training_arguments.training_arguments.target_domain_list
+            DA_rotation_training_argument.training_arguments.domains_list,
+            DA_rotation_training_argument.training_arguments.target_domain_list
         )
 
         for source_and_target_domain in lazy_man.source_and_target_domain_permutation_list:
-            my_training_arguments.training_arguments.source=source_and_target_domain['source_domain']
-            my_training_arguments.training_arguments.target=source_and_target_domain['target_domain']
+            DA_rotation_training_argument.training_arguments.source=source_and_target_domain['source_domain']
+            DA_rotation_training_argument.training_arguments.target=source_and_target_domain['target_domain']
 
             output_manager = OutputManager(
-                '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' +\
-                str(my_training_arguments.training_arguments.jig_weight)+ '_'+\
-                str(my_training_arguments.training_arguments.bias_whole_image)+ '_'+\
-                my_training_arguments.training_arguments.target
+                output_file_path=\
+                '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' + \
+                "DA_rotation" + \
+                DA_rotation_training_argument.training_arguments.target + \
+                str(DA_rotation_training_argument.training_arguments.unsupervised_task_weight) + '_' + \
+                str(DA_rotation_training_argument.training_arguments.bias_whole_image) + '_' + \
+                str(DA_rotation_training_argument.training_arguments.target_domain_unsupervised_task_loss_weight) + '_' + \
+                str(DA_rotation_training_argument.training_arguments.entropy_loss_weight) + '_'
+
             )
-            print('--------------------------------------------------------')
-            print(my_training_arguments.training_arguments)
-            print('--------------------------------------------------------')
-            for i in range(int(my_training_arguments.training_arguments.repeat_times)):
-                lazy_train(my_training_arguments, output_manager)
+            for i in range(int(DA_rotation_training_argument.training_arguments.repeat_times)):
+                lazy_train(DA_rotation_training_argument, output_manager)
 
 
 
