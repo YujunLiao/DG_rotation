@@ -12,12 +12,14 @@ from time import time, strftime, localtime
 from trainer_utils.model.MyModel import MyModel
 
 from trainer_utils.logger.Logger import Logger
-from trainer_utils.training_argument.DGRotationTrainingArgument import DGRotationTrainingArgument
-from trainer_utils.data_loader.MyDataLoader import MyDataLoader
+from trainer_utils.training_argument.DARotationTrainingArgument import DARotationTrainingArgument
+from trainer_utils.data_loader.DARotationDataLoader import DARotationDataLoader
 from trainer_utils.optimizer.MyOptimizer import MyOptimizer
 from trainer_utils.scheduler.MyScheduler import MyScheduler
 from trainer_utils.output_manager.OutputManager import OutputManager
 from trainer_utils.lazy_man.LazyMan import LazyMan
+import itertools
+import torch.nn.functional as func
 
 class Trainer:
     def __init__(self, my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device, output_manager):
@@ -26,7 +28,8 @@ class Trainer:
         self.model = my_model.model.to(device)
         self.output_manager=output_manager
 
-        self.train_data_loader = my_data_loader.train_data_loader
+        self.source_domain_train_data_loader = my_data_loader.source_domain_train_data_loader
+        self.target_domain_train_data_loader = my_data_loader.target_domain_train_data_loader
         self.validation_data_loader = my_data_loader.validation_data_loader
         self.test_data_loader = my_data_loader.test_data_loader
 
@@ -51,12 +54,25 @@ class Trainer:
         self.model.train()
 
         # domain_index_of_images_in_this_patch is target domain index in the source domain list
-        for i, ((data, rotation_label, class_label), domain_index_of_images_in_this_patch) in enumerate(self.train_data_loader):
-            data, rotation_label, class_label, domain_index_of_images_in_this_patch = data.to(self.device), rotation_label.to(self.device), class_label.to(self.device), domain_index_of_images_in_this_patch.to(self.device)
+        for i, (data_from_source_domain, data_from_target_domain) \
+                in enumerate(zip(self.source_domain_train_data_loader, itertools.cycle(self.target_domain_train_data_loader))):
+
+            (data, rotation_label, class_label), domain_index_of_images_in_this_patch = data_from_source_domain
+            data, rotation_label, class_label, domain_index_of_images_in_this_patch = \
+                data.to(self.device), rotation_label.to(self.device), class_label.to(self.device), domain_index_of_images_in_this_patch.to(self.device)
+
+            (target_domain_data, target_domain_rotation_label, _), _ = data_from_target_domain
+            target_domain_data, target_domain_rotation_label = target_domain_data.to(self.device), target_domain_rotation_label.to(self.device)
+
+
             self.optimizer.zero_grad()
 
             rotation_predict_label, class_predict_label = self.model(data)  # , lambda_val=lambda_val)
             unsupervised_task_loss = criterion(rotation_predict_label, rotation_label)
+
+            target_domain_rotation_predict_label, target_domain_class_predict_label = self.model(target_domain_data)  # , lambda_val=lambda_val)
+            target_domain_unsupervised_task_loss = criterion(target_domain_rotation_predict_label, target_domain_rotation_label)
+            target_domain_entropy_loss = self._entropy_loss(target_domain_class_predict_label[target_domain_rotation_label==0])
 
             if self.classify_only_ordered_images_or_not:
                 if self.target_domain_index is not None:
@@ -76,17 +92,21 @@ class Trainer:
             _, cls_pred = class_predict_label.max(dim=1)
             _, jig_pred = rotation_predict_label.max(dim=1)
             # _, domain_pred = domain_logit.max(dim=1)
-            loss = supervised_task_loss + unsupervised_task_loss * self.unsupervised_task_loss_weight
+            loss = supervised_task_loss + unsupervised_task_loss * self.unsupervised_task_loss_weight\
+            + target_domain_unsupervised_task_loss * self.training_arguments.target_domain_unsupervised_task_loss_weight\
+            + target_domain_entropy_loss * self.training_arguments.entropy_loss_weight
 
             loss.backward()
             self.optimizer.step()
 
             self.logger.log(
                 i,
-                len(self.train_data_loader),
+                len(self.source_domain_train_data_loader),
                 {
                     "jigsaw": unsupervised_task_loss.item(),
-                    "class": supervised_task_loss.item()
+                    "class": supervised_task_loss.item(),
+                    "t_rotation": target_domain_unsupervised_task_loss.item(),
+                    "entropy": target_domain_entropy_loss.item()
                  },
                 {
                     "jigsaw": torch.sum(jig_pred == rotation_label.data).item(),
@@ -109,6 +129,8 @@ class Trainer:
                 self.logger.log_test(phase, {"jigsaw": jigsaw_acc, "class": class_acc})
                 self.results[phase][self.current_epoch] = class_acc
 
+    def _entropy_loss(self, x):
+        return torch.sum(-func.softmax(x, 1) * func.log_softmax(x, 1), 1).mean()
 
     def do_test(self, loader):
         jigsaw_correct = 0
@@ -146,7 +168,7 @@ class Trainer:
         return jigsaw_correct, class_correct, single_correct
 
     def do_training(self):
-        print("Dataset size: trainer %d, val %d, test %d" % (len(self.train_data_loader.dataset), len(self.validation_data_loader.dataset), len(self.test_data_loader.dataset)))
+        print("Dataset size: trainer %d, val %d, test %d" % (len(self.source_domain_train_data_loader.dataset), len(self.validation_data_loader.dataset), len(self.test_data_loader.dataset)))
 
         # TODO(lyj):
         self.logger = Logger(self.training_arguments, update_frequency=30)  # , "domain", "lambda"
@@ -194,7 +216,7 @@ class Trainer:
 def lazy_train(my_training_arguments, output_manager):
     my_model = MyModel(my_training_arguments)
     is_patch_based_or_not = my_model.model.is_patch_based()
-    my_data_loader = MyDataLoader(my_training_arguments, is_patch_based_or_not)
+    my_data_loader = DARotationDataLoader(my_training_arguments, is_patch_based_or_not)
     my_optimizer = MyOptimizer(my_training_arguments, my_model)
     my_scheduler = MyScheduler(my_training_arguments, my_optimizer)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -205,7 +227,7 @@ def lazy_train(my_training_arguments, output_manager):
 if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True
 
-    my_training_arguments = DGRotationTrainingArgument()
+    my_training_arguments = DARotationTrainingArgument()
     # my_training_arguments.training_arguments.classify_only_sane=True
     my_training_arguments.training_arguments.TTA = False
     my_training_arguments.training_arguments.nesterov = False

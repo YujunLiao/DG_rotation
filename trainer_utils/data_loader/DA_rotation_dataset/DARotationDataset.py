@@ -21,7 +21,7 @@ class DARotationDataset():
         img_transformer, tile_transformer = self._get_train_transformers(training_arguments)
         val_transformer = self._get_val_transformer(training_arguments)
 
-        train_dataset = RotationTrainDataset(
+        source_domain_train_dataset = RotationTrainDataset(
             my_dataset.train_dataset['train_data_paths'],
             my_dataset.train_dataset['train_labels'],
             is_patch_based_or_not=is_patch_based_or_not,
@@ -31,10 +31,23 @@ class DARotationDataset():
         )
 
         if max_number_of_train_dataset:
-            train_dataset = Subset(train_dataset, max_number_of_train_dataset)
+            source_domain_train_dataset = Subset(source_domain_train_dataset, max_number_of_train_dataset)
 
-        self.train_dataset = ConcatDataset([train_dataset])
+        self.source_domain_train_dataset = ConcatDataset([source_domain_train_dataset])
 
+        target_domain_train_dataset = RotationTrainDataset(
+            my_dataset.test_dataset['test_data_paths'],
+            my_dataset.test_dataset['test_labels'],
+            is_patch_based_or_not=is_patch_based_or_not,
+            img_transformer=img_transformer,
+            tile_transformer=tile_transformer,
+            percent_of_original_image=training_arguments.bias_whole_image
+        )
+
+        if max_number_of_train_dataset:
+            target_domain_train_dataset = Subset(target_domain_train_dataset, max_number_of_train_dataset)
+
+        self.target_domain_train_dataset = ConcatDataset([target_domain_train_dataset])
 
 
         validation_dataset = RotationTestDataset(

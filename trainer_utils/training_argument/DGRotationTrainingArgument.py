@@ -7,7 +7,7 @@ def parameters_lists(arg):
     return [float(x) for x in arg.split(',')]
 
 
-class MyTrainingArgument(argparse.ArgumentParser):
+class DGRotationTrainingArgument(argparse.ArgumentParser):
     """Store the arguments coming from the console.
 
     Implementation:
@@ -15,7 +15,7 @@ class MyTrainingArgument(argparse.ArgumentParser):
         training_arguments:A dictionary containing all the arguments from the console.
     """
     def __init__(self):
-        super(MyTrainingArgument, self).__init__(
+        super(DGRotationTrainingArgument, self).__init__(
             description="Script to launch jigsaw training",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter
         )

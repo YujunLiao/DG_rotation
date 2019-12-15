@@ -6,10 +6,10 @@ from torch.utils.data import DataLoader
 # from trainer_utils.data_loader.helper.JigsawLoader import JigsawDataset, JigsawTestDataset, get_split_dataset_info, _dataset_info
 # from trainer_utils.data_loader.helper.concat_dataset import ConcatDataset
 # from random import sample, random
-from trainer_utils.data_loader.rotation_dataset.RotationDataset import DARotationDataset
+from trainer_utils.data_loader.DA_rotation_dataset.DARotationDataset import DARotationDataset
 
 
-class MyDataLoader:
+class DARotationDataLoader:
     """Return train, validation, test data loaders.
 
     Implementation:
@@ -24,7 +24,8 @@ class MyDataLoader:
         :param my_training_arguments:
         :param is_patch_based_or_not:
         """
-        self.train_data_loader, self.validation_data_loader, self.test_data_loader = self._get_train_and_validation_and_test_data_loader(
+        self.source_domain_train_data_loader, self.target_domain_train_data_loader, self.validation_data_loader, self.test_data_loader = \
+        self._get_train_and_validation_and_test_data_loader(
             my_training_arguments,
             is_patch_based_or_not=is_patch_based_or_not
         )
@@ -46,16 +47,25 @@ class MyDataLoader:
         # validation_dataset = my_dataset.validation_dataset
         # test_dataset = my_dataset.test_dataset
 
-        rotation_dataset = DARotationDataset(my_training_arguments, is_patch_based_or_not)
-        train_dataset=rotation_dataset.train_dataset
-        validation_dataset=rotation_dataset.validation_dataset
-        test_dataset=rotation_dataset.test_dataset
+        DA_rotation_dataset = DARotationDataset(my_training_arguments, is_patch_based_or_not)
+        source_domain_train_dataset=DA_rotation_dataset.source_domain_train_dataset
+        target_domain_train_dataset=DA_rotation_dataset.target_domain_train_dataset
+        validation_dataset=DA_rotation_dataset.validation_dataset
+        test_dataset=DA_rotation_dataset.test_dataset
 
         # dataset =
         # val_dataset = ConcatDataset(validation_dataset_list)
         # TODO(lyj): drop_last
-        train_data_loader = torch.utils.data.DataLoader(
-            train_dataset,
+        source_domain_train_data_loader = torch.utils.data.DataLoader(
+            source_domain_train_dataset,
+            batch_size=my_training_arguments.training_arguments.batch_size,
+            shuffle=True,
+            num_workers=4,
+            pin_memory=True,
+            drop_last=True
+        )
+        target_domain_train_data_loader = torch.utils.data.DataLoader(
+            target_domain_train_dataset,
             batch_size=my_training_arguments.training_arguments.batch_size,
             shuffle=True,
             num_workers=4,
@@ -80,7 +90,7 @@ class MyDataLoader:
             drop_last=False
         )
 
-        return train_data_loader, validation_data_loader, test_data_loader
+        return source_domain_train_data_loader, target_domain_train_data_loader, validation_data_loader, test_data_loader
 
     # def _get_test_data_loader(self, my_training_arguments, is_patch_based_or_not=False):
     #     args = my_training_arguments.training_arguments
