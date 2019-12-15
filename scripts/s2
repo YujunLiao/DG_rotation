@@ -1,14 +1,12 @@
 # temp DG_rotation_trainer
 # train resnet-DA-rotation pacs
-# s_rotation_weight t_rotation_weight bias_whole_image entrofy
+# s_rotation_weight bias_whole_image t_rotation_weight  entrofy
 CUDA_VISIBLE_DEVICES=$1 \
 /home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 /home/giorgio/Files/pycharm_project/DG_rotation/DA_rotation_trainer.py \
 --domains_list photo  sketch cartoon art_painting \
 --target_domain_list art_painting cartoon \
---parameters_lists 0.8,0.1   0.2,0.3 \
---target_domain_unsupervised_task_loss_weight 0.1 \
---entropy_loss_weight 0.1 \
+--parameters_lists 0.8,0.1,0.2,0.3   0.2,0.3,0.4,0.5 \
 --repeat_times 1 \
 --network resnet18  --epochs 2 \
 --classify_only_ordered_images_or_not True  --TTA False --nesterov False \
@@ -17,6 +15,8 @@ CUDA_VISIBLE_DEVICES=$1 \
 --train_all True --folder_name test  \
 --min_scale 0.8 --max_scale 1.0 --random_horiz_flip 0.5 --jitter 0.4 --tile_random_grayscale 0.1 \
 #--unsupervised_task_weight 0.8  --bias_whole_image 0.3 \
+#--target_domain_unsupervised_task_loss_weight 0.1 \
+#--entropy_loss_weight 0.1 \
 #--source photo  sketch cartoon  --target   art_painting  \
 
 

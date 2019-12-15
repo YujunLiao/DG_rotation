@@ -7,7 +7,7 @@ time
 all_parameter
 Dataset size:
 result output file name:
-DG_rotaion target_domain network rotation_weight bias_whole_image
+DG_rotaion network target_domain  rotation_weight bias_whole_image
 result output content:
 time
 target_domain
@@ -25,7 +25,7 @@ time
 all_parameter
 Dataset size:
 result output file name:
-DG_rotaion target_domain network rotation_weight bias_whole_image t_rotation_weight entropy_weight
+DG_rotaion network target_domain  rotation_weight bias_whole_image t_rotation_weight entropy_weight
 result output content:
 time
 target_domain

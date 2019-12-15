@@ -59,6 +59,7 @@ class Logger():
 
     def log_test(self, phase, accuracies):
         print("Accuracies on %s: " % phase + ", ".join(["%s : %.2f" % (k, v * 100) for k, v in accuracies.items()]))
+        print('--------------------------------------------------------')
         if self.tf_logger:
             for k, v in accuracies.items(): self.tf_logger.scalar_summary("%s/acc_%s" % (phase, k), v, self.current_iter)
 

@@ -114,6 +114,9 @@ class DARotationTrainer:
                 data.shape[0]
             )
             del loss, supervised_task_loss, unsupervised_task_loss, rotation_predict_label, class_predict_label
+            del target_domain_rotation_predict_label, target_domain_class_predict_label
+            del  target_domain_unsupervised_task_loss, target_domain_entropy_loss
+
         self.model.eval()
         with torch.no_grad():
             for phase, loader in self.test_loaders.items():
@@ -181,6 +184,7 @@ class DARotationTrainer:
             self.scheduler.step()
             lrs = self.scheduler.get_lr()
             self.logger.new_epoch(lrs)
+            print('--------------------------------------------------------')
             print("current epoch:%d", self.current_epoch)
             print("New epoch - lr: %s" % ", ".join([str(lr) for lr in lrs]))
             self._do_epoch()
@@ -246,7 +250,10 @@ if __name__ == "__main__":
 
         DA_rotation_training_argument.training_arguments.unsupervised_task_weight=parameter_pair[0]
         DA_rotation_training_argument.training_arguments.bias_whole_image=parameter_pair[1]
-        # lazy_man = LazyMan(['CALTECH', 'LABELME', 'PASCAL', 'SUN'])
+        DA_rotation_training_argument.training_arguments.target_domain_unsupervised_task_loss_weight=parameter_pair[2]
+        DA_rotation_training_argument.training_arguments.entropy_loss_weight=parameter_pair[3]
+
+            # lazy_man = LazyMan(['CALTECH', 'LABELME', 'PASCAL', 'SUN'])
         # lazy_man = LazyMan(
         #     ['art_painting', 'cartoon', 'sketch', 'photo'],
         #     ['art_painting', 'cartoon', 'sketch', 'photo']
@@ -263,12 +270,13 @@ if __name__ == "__main__":
             output_manager = OutputManager(
                 output_file_path=\
                 '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' + \
-                "DA_rotation" + \
-                DA_rotation_training_argument.training_arguments.target + \
+                "DA_rotation_" + \
+                DA_rotation_training_argument.training_arguments.network + '_'+ \
+                DA_rotation_training_argument.training_arguments.target + '_'+ \
                 str(DA_rotation_training_argument.training_arguments.unsupervised_task_weight) + '_' + \
                 str(DA_rotation_training_argument.training_arguments.bias_whole_image) + '_' + \
                 str(DA_rotation_training_argument.training_arguments.target_domain_unsupervised_task_loss_weight) + '_' + \
-                str(DA_rotation_training_argument.training_arguments.entropy_loss_weight) + '_'
+                str(DA_rotation_training_argument.training_arguments.entropy_loss_weight)
 
             )
             for i in range(int(DA_rotation_training_argument.training_arguments.repeat_times)):

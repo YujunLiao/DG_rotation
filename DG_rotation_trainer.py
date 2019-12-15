@@ -156,10 +156,10 @@ class Trainer:
         self.logger = Logger(self.training_arguments, update_frequency=30)  # , "domain", "lambda"
         self.results = {"val": torch.zeros(self.training_arguments.epochs), "test": torch.zeros(self.training_arguments.epochs)}
         for self.current_epoch in range(self.training_arguments.epochs):
-            print("current epoch:%d", self.current_epoch)
             self.scheduler.step()
             lrs = self.scheduler.get_lr()
             self.logger.new_epoch(lrs)
+            print('--------------------------------------------------------')
             print("current epoch:%d", self.current_epoch)
             print("New epoch - lr: %s" % ", ".join([str(lr) for lr in lrs]))
             self._do_epoch()
@@ -237,10 +237,11 @@ if __name__ == "__main__":
             output_manager = OutputManager(
                 output_file_path= \
                 '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' +\
-                "DG_rotation" + \
-                my_training_arguments.training_arguments.target + \
+                "DG_rotation_" + \
+                my_training_arguments.training_arguments.network + '_' + \
+                my_training_arguments.training_arguments.target + '_' + \
                 str(my_training_arguments.training_arguments.unsupervised_task_weight)+ '_'+\
-                str(my_training_arguments.training_arguments.bias_whole_image)+ '_'
+                str(my_training_arguments.training_arguments.bias_whole_image)
             )
             print('--------------------------------------------------------')
             print(my_training_arguments.training_arguments)
