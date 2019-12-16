@@ -1,0 +1,29 @@
+# art_painting cartoon sketch photo 7 PACS
+# CALTECH LABELME PASCAL SUN 5 VLCS
+# art clipart product real_world 65 Office_Home
+# amazon dslr webcam 31 Office-31
+
+# DA train resnet18 rotation pacs:7
+# s_rotation_weight bias_whole_image t_rotation_weight  entropy
+
+CUDA_VISIBLE_DEVICES=$1 \
+/home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
+/home/giorgio/Files/pycharm_project/DG_rotation/DA_rotation_trainer.py \
+--parameters_lists 0.8,0.4,0.7,0.1  \
+--domains_list photo  sketch cartoon art_painting \
+--target_domain_list photo    \
+--n_classes 7 \
+--repeat_times 3 \
+--network resnet18  --epochs 30 \
+--classify_only_ordered_images_or_not True  --TTA False --nesterov False \
+--batch_size 128   --image_size 222 \
+--learning_rate 0.001 --val_size 0.1  \
+--train_all True --folder_name test  \
+--min_scale 0.8 --max_scale 1.0 --random_horiz_flip 0.5 --jitter 0.4 --tile_random_grayscale 0.1 \
+#--unsupervised_task_weight 0.8  --bias_whole_image 0.3 \
+#--target_domain_unsupervised_task_loss_weight 0.1 \
+#--entropy_loss_weight 0.1 \
+#--source photo  sketch cartoon  --target   art_painting  \
+
+
+

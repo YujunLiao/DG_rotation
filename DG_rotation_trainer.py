@@ -13,13 +13,14 @@ from trainer_utils.model.MyModel import MyModel
 
 from trainer_utils.logger.Logger import Logger
 from trainer_utils.training_argument.DGRotationTrainingArgument import DGRotationTrainingArgument
-from trainer_utils.data_loader.MyDataLoader import MyDataLoader
+from trainer_utils.data_loader.DGRotationDataLoader import DGRotationDataLoader
 from trainer_utils.optimizer.MyOptimizer import MyOptimizer
 from trainer_utils.scheduler.MyScheduler import MyScheduler
 from trainer_utils.output_manager.OutputManager import OutputManager
 from trainer_utils.lazy_man.LazyMan import LazyMan
 
-class Trainer:
+
+class DGRotationTrainer:
     def __init__(self, my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device, output_manager):
         self.training_arguments = my_training_arguments.training_arguments
         self.device = device
@@ -200,11 +201,11 @@ class Trainer:
 def lazy_train(my_training_arguments, output_manager):
     my_model = MyModel(my_training_arguments)
     is_patch_based_or_not = my_model.model.is_patch_based()
-    my_data_loader = MyDataLoader(my_training_arguments, is_patch_based_or_not)
+    DG_rotation_data_loader = DGRotationDataLoader(my_training_arguments, is_patch_based_or_not)
     my_optimizer = MyOptimizer(my_training_arguments, my_model)
     my_scheduler = MyScheduler(my_training_arguments, my_optimizer)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    trainer = Trainer(my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device, output_manager)
+    trainer = DGRotationTrainer(my_training_arguments, my_model, DG_rotation_data_loader, my_optimizer, my_scheduler, device, output_manager)
     trainer.do_training()
 
 

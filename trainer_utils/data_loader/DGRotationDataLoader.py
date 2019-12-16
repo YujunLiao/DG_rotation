@@ -6,10 +6,10 @@ from torch.utils.data import DataLoader
 # from trainer_utils.data_loader.helper.JigsawLoader import JigsawDataset, JigsawTestDataset, get_split_dataset_info, _dataset_info
 # from trainer_utils.data_loader.helper.concat_dataset import ConcatDataset
 # from random import sample, random
-from trainer_utils.data_loader.rotation_dataset.RotationDataset import DARotationDataset
+from trainer_utils.data_loader.DG_rotation_dataset.DGRotationDataset import DARotationDataset
 
 
-class MyDataLoader:
+class DGRotationDataLoader:
     """Return train, validation, test data loaders.
 
     Implementation:

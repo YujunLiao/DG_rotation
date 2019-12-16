@@ -8,7 +8,7 @@ import warnings
 
 #from torch.utils.data import Dataset
 #from trainer_utils.data_loader.helper.JigsawLoader import JigsawTestDatasetMultiple
-#from trainer_utils.data_loader.rotation_dataset.RotationDataset import RotationTestDataset, RotationTrainDataset
+#from trainer_utils.data_loader.DG_rotation_dataset.RotationDataset import RotationTestDataset, RotationTrainDataset
 
 mnist = 'mnist'
 mnist_m = 'mnist_m'
