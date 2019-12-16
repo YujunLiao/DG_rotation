@@ -1,0 +1,11 @@
+--------------------------------------------------------
+2019-12-12 15:25:32
+art_painting
+jigweight:0.8
+bias_hole_image:0.1
+only_classify the ordered image:True
+Highest accuracy on validation set appears on epoch tensor(1)
+Highest accuracy on test set appears on epoch tensor(1)
+Accuracy on test set when the accuracy on validation set is highest:0.207
+Highest accuracy on test set:0.207
+It took 47.3417

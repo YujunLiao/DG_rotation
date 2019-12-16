@@ -1,7 +1,7 @@
 # photo  sketch cartoon art_painting 7
 # Caltech Labelme Pascal Sun 5
 # CALTECH LABELME PASCAL SUN
-# Art Clipart Product Real-World 65
+# art clipart product real_world 65
 
 # for i in {1..8}; do cp s1 t"$i" ; done;
 

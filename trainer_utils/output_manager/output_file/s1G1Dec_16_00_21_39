@@ -1,0 +1,669 @@
+display-im6.q16: unable to open X server `' @ error/display.c/DisplayImageCommand/432.
+******************Start training**************************************
+--------------------------------------------------------
+Dataset size: trainer 11847, val 1314, test 2427
+--------------------------------------------------------
+Namespace(TTA=False, batch_size=128, bias_whole_image=0.4, classify_only_ordered_images_or_not=True, domains_list=['art', 'clipart', 'product', 'real_world'], epochs=30, folder_name='test', image_size=222, jitter=0.4, learning_rate=0.001, limit_source=None, limit_target=None, max_scale=1.0, min_scale=0.8, n_classes=65, nesterov=False, network='resnet18', ooo_weight=0, parameters_lists=[[0.8, 0.4]], random_horiz_flip=0.5, repeat_times=1, source=['clipart', 'product', 'real_world'], suffix='', target='art', target_domain_list=['art', 'clipart'], tf_logger=True, tile_random_grayscale=0.1, train_all=True, unsupervised_task_weight=0.8, val_size=0.1)
+--------------------------------------------------------
+/home/giorgio/Files/pycharm_project/pytorch_interpreter/lib/python3.7/site-packages/torch/optim/lr_scheduler.py:100: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule.See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  "https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate", UserWarning)
+--------------------------------------------------------
+current epoch:%d 0
+New epoch - lr: 0.001
+0/92 of epoch 1/30 jigsaw : 1.746, class : 4.503 - acc jigsaw : 16.41, class : 2.34 [bs:128]
+30/92 of epoch 1/30 jigsaw : 1.279, class : 3.960 - acc jigsaw : 53.12, class : 7.81 [bs:128]
+60/92 of epoch 1/30 jigsaw : 1.130, class : 3.469 - acc jigsaw : 57.03, class : 20.31 [bs:128]
+90/92 of epoch 1/30 jigsaw : 1.105, class : 3.112 - acc jigsaw : 51.56, class : 34.38 [bs:128]
+Accuracies on val: jigsaw : 97.56, class : 39.73
+--------------------------------------------------------
+Accuracies on test: jigsaw : 95.47, class : 25.92
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 1
+New epoch - lr: 0.001
+0/92 of epoch 2/30 jigsaw : 0.992, class : 2.863 - acc jigsaw : 59.38, class : 38.28 [bs:128]
+30/92 of epoch 2/30 jigsaw : 1.005, class : 2.732 - acc jigsaw : 60.16, class : 42.97 [bs:128]
+60/92 of epoch 2/30 jigsaw : 0.908, class : 2.104 - acc jigsaw : 60.94, class : 52.34 [bs:128]
+90/92 of epoch 2/30 jigsaw : 1.019, class : 1.786 - acc jigsaw : 57.03, class : 49.22 [bs:128]
+Accuracies on val: jigsaw : 96.04, class : 58.07
+--------------------------------------------------------
+Accuracies on test: jigsaw : 93.90, class : 41.20
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 2
+New epoch - lr: 0.001
+0/92 of epoch 3/30 jigsaw : 1.002, class : 2.014 - acc jigsaw : 55.47, class : 46.09 [bs:128]
+30/92 of epoch 3/30 jigsaw : 1.050, class : 1.793 - acc jigsaw : 50.00, class : 49.22 [bs:128]
+60/92 of epoch 3/30 jigsaw : 1.075, class : 1.804 - acc jigsaw : 49.22, class : 45.31 [bs:128]
+90/92 of epoch 3/30 jigsaw : 1.039, class : 1.545 - acc jigsaw : 50.78, class : 46.09 [bs:128]
+Accuracies on val: jigsaw : 94.82, class : 64.92
+--------------------------------------------------------
+Accuracies on test: jigsaw : 91.47, class : 45.98
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 3
+New epoch - lr: 0.001
+0/92 of epoch 4/30 jigsaw : 0.936, class : 1.573 - acc jigsaw : 60.94, class : 44.53 [bs:128]
+30/92 of epoch 4/30 jigsaw : 1.049, class : 1.501 - acc jigsaw : 54.69, class : 47.66 [bs:128]
+60/92 of epoch 4/30 jigsaw : 0.882, class : 1.383 - acc jigsaw : 62.50, class : 54.69 [bs:128]
+90/92 of epoch 4/30 jigsaw : 0.870, class : 1.339 - acc jigsaw : 62.50, class : 52.34 [bs:128]
+Accuracies on val: jigsaw : 95.81, class : 69.03
+--------------------------------------------------------
+Accuracies on test: jigsaw : 93.61, class : 47.96
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 4
+New epoch - lr: 0.001
+0/92 of epoch 5/30 jigsaw : 0.914, class : 1.408 - acc jigsaw : 61.72, class : 53.91 [bs:128]
+30/92 of epoch 5/30 jigsaw : 0.917, class : 0.961 - acc jigsaw : 64.06, class : 61.72 [bs:128]
+60/92 of epoch 5/30 jigsaw : 0.927, class : 1.280 - acc jigsaw : 58.59, class : 59.38 [bs:128]
+90/92 of epoch 5/30 jigsaw : 0.883, class : 1.298 - acc jigsaw : 62.50, class : 55.47 [bs:128]
+Accuracies on val: jigsaw : 94.60, class : 69.48
+--------------------------------------------------------
+Accuracies on test: jigsaw : 91.64, class : 49.24
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 5
+New epoch - lr: 0.001
+0/92 of epoch 6/30 jigsaw : 0.856, class : 1.151 - acc jigsaw : 63.28, class : 57.81 [bs:128]
+30/92 of epoch 6/30 jigsaw : 0.959, class : 1.348 - acc jigsaw : 61.72, class : 53.91 [bs:128]
+60/92 of epoch 6/30 jigsaw : 0.882, class : 1.135 - acc jigsaw : 59.38, class : 57.03 [bs:128]
+90/92 of epoch 6/30 jigsaw : 0.806, class : 1.190 - acc jigsaw : 64.06, class : 57.81 [bs:128]
+Accuracies on val: jigsaw : 95.43, class : 71.39
+--------------------------------------------------------
+Accuracies on test: jigsaw : 91.84, class : 50.80
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 6
+New epoch - lr: 0.001
+0/92 of epoch 7/30 jigsaw : 0.808, class : 1.003 - acc jigsaw : 67.97, class : 66.41 [bs:128]
+30/92 of epoch 7/30 jigsaw : 0.907, class : 1.245 - acc jigsaw : 60.16, class : 54.69 [bs:128]
+60/92 of epoch 7/30 jigsaw : 0.893, class : 0.875 - acc jigsaw : 60.16, class : 61.72 [bs:128]
+90/92 of epoch 7/30 jigsaw : 0.764, class : 0.792 - acc jigsaw : 66.41, class : 58.59 [bs:128]
+Accuracies on val: jigsaw : 94.60, class : 72.37
+--------------------------------------------------------
+Accuracies on test: jigsaw : 89.45, class : 51.75
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 7
+New epoch - lr: 0.001
+0/92 of epoch 8/30 jigsaw : 0.909, class : 1.176 - acc jigsaw : 65.62, class : 53.12 [bs:128]
+30/92 of epoch 8/30 jigsaw : 0.856, class : 0.866 - acc jigsaw : 59.38, class : 64.06 [bs:128]
+60/92 of epoch 8/30 jigsaw : 0.773, class : 1.177 - acc jigsaw : 64.84, class : 53.12 [bs:128]
+90/92 of epoch 8/30 jigsaw : 0.737, class : 0.908 - acc jigsaw : 67.19, class : 66.41 [bs:128]
+Accuracies on val: jigsaw : 94.98, class : 73.74
+--------------------------------------------------------
+Accuracies on test: jigsaw : 91.55, class : 52.74
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 8
+New epoch - lr: 0.001
+0/92 of epoch 9/30 jigsaw : 0.930, class : 0.820 - acc jigsaw : 60.16, class : 59.38 [bs:128]
+30/92 of epoch 9/30 jigsaw : 0.787, class : 1.121 - acc jigsaw : 64.06, class : 54.69 [bs:128]
+60/92 of epoch 9/30 jigsaw : 0.925, class : 0.918 - acc jigsaw : 56.25, class : 60.94 [bs:128]
+90/92 of epoch 9/30 jigsaw : 0.864, class : 1.028 - acc jigsaw : 66.41, class : 56.25 [bs:128]
+Accuracies on val: jigsaw : 93.91, class : 74.73
+--------------------------------------------------------
+Accuracies on test: jigsaw : 86.32, class : 54.88
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 9
+New epoch - lr: 0.001
+0/92 of epoch 10/30 jigsaw : 0.718, class : 0.670 - acc jigsaw : 70.31, class : 63.28 [bs:128]
+30/92 of epoch 10/30 jigsaw : 0.778, class : 0.779 - acc jigsaw : 67.19, class : 57.03 [bs:128]
+60/92 of epoch 10/30 jigsaw : 0.776, class : 0.780 - acc jigsaw : 64.84, class : 64.06 [bs:128]
+90/92 of epoch 10/30 jigsaw : 0.780, class : 0.810 - acc jigsaw : 65.62, class : 62.50 [bs:128]
+Accuracies on val: jigsaw : 92.24, class : 75.49
+--------------------------------------------------------
+Accuracies on test: jigsaw : 89.25, class : 54.47
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 10
+New epoch - lr: 0.001
+0/92 of epoch 11/30 jigsaw : 0.873, class : 0.754 - acc jigsaw : 64.06, class : 67.97 [bs:128]
+30/92 of epoch 11/30 jigsaw : 0.721, class : 0.538 - acc jigsaw : 66.41, class : 66.41 [bs:128]
+60/92 of epoch 11/30 jigsaw : 0.810, class : 0.700 - acc jigsaw : 67.97, class : 63.28 [bs:128]
+90/92 of epoch 11/30 jigsaw : 0.748, class : 0.894 - acc jigsaw : 64.06, class : 66.41 [bs:128]
+Accuracies on val: jigsaw : 91.78, class : 76.18
+--------------------------------------------------------
+Accuracies on test: jigsaw : 86.69, class : 55.79
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 11
+New epoch - lr: 0.001
+0/92 of epoch 12/30 jigsaw : 0.712, class : 0.674 - acc jigsaw : 67.19, class : 59.38 [bs:128]
+30/92 of epoch 12/30 jigsaw : 0.721, class : 0.625 - acc jigsaw : 75.78, class : 65.62 [bs:128]
+60/92 of epoch 12/30 jigsaw : 0.788, class : 0.523 - acc jigsaw : 71.88, class : 60.16 [bs:128]
+90/92 of epoch 12/30 jigsaw : 0.695, class : 0.737 - acc jigsaw : 75.78, class : 64.84 [bs:128]
+Accuracies on val: jigsaw : 93.68, class : 77.17
+--------------------------------------------------------
+Accuracies on test: jigsaw : 88.96, class : 55.62
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 12
+New epoch - lr: 0.001
+0/92 of epoch 13/30 jigsaw : 0.662, class : 0.651 - acc jigsaw : 71.09, class : 61.72 [bs:128]
+30/92 of epoch 13/30 jigsaw : 0.817, class : 0.733 - acc jigsaw : 61.72, class : 66.41 [bs:128]
+60/92 of epoch 13/30 jigsaw : 0.837, class : 0.505 - acc jigsaw : 64.84, class : 63.28 [bs:128]
+90/92 of epoch 13/30 jigsaw : 0.698, class : 0.672 - acc jigsaw : 75.00, class : 64.06 [bs:128]
+Accuracies on val: jigsaw : 94.06, class : 78.01
+--------------------------------------------------------
+Accuracies on test: jigsaw : 90.19, class : 56.70
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 13
+New epoch - lr: 0.001
+0/92 of epoch 14/30 jigsaw : 0.740, class : 0.654 - acc jigsaw : 67.97, class : 70.31 [bs:128]
+30/92 of epoch 14/30 jigsaw : 0.763, class : 0.743 - acc jigsaw : 71.88, class : 63.28 [bs:128]
+60/92 of epoch 14/30 jigsaw : 0.850, class : 0.622 - acc jigsaw : 65.62, class : 62.50 [bs:128]
+90/92 of epoch 14/30 jigsaw : 0.704, class : 0.611 - acc jigsaw : 71.09, class : 64.84 [bs:128]
+Accuracies on val: jigsaw : 93.99, class : 78.39
+--------------------------------------------------------
+Accuracies on test: jigsaw : 89.25, class : 56.70
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 14
+New epoch - lr: 0.001
+0/92 of epoch 15/30 jigsaw : 0.673, class : 0.567 - acc jigsaw : 72.66, class : 67.19 [bs:128]
+30/92 of epoch 15/30 jigsaw : 0.728, class : 0.652 - acc jigsaw : 67.97, class : 61.72 [bs:128]
+60/92 of epoch 15/30 jigsaw : 0.786, class : 0.487 - acc jigsaw : 65.62, class : 65.62 [bs:128]
+90/92 of epoch 15/30 jigsaw : 0.691, class : 0.568 - acc jigsaw : 67.19, class : 64.84 [bs:128]
+Accuracies on val: jigsaw : 93.61, class : 78.61
+--------------------------------------------------------
+Accuracies on test: jigsaw : 89.45, class : 56.37
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 15
+New epoch - lr: 0.001
+0/92 of epoch 16/30 jigsaw : 0.678, class : 0.659 - acc jigsaw : 68.75, class : 63.28 [bs:128]
+30/92 of epoch 16/30 jigsaw : 0.679, class : 0.411 - acc jigsaw : 69.53, class : 66.41 [bs:128]
+60/92 of epoch 16/30 jigsaw : 0.659, class : 0.482 - acc jigsaw : 69.53, class : 69.53 [bs:128]
+90/92 of epoch 16/30 jigsaw : 0.677, class : 0.703 - acc jigsaw : 68.75, class : 64.84 [bs:128]
+Accuracies on val: jigsaw : 93.15, class : 78.92
+--------------------------------------------------------
+Accuracies on test: jigsaw : 86.61, class : 56.90
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 16
+New epoch - lr: 0.001
+0/92 of epoch 17/30 jigsaw : 0.808, class : 0.489 - acc jigsaw : 65.62, class : 72.66 [bs:128]
+30/92 of epoch 17/30 jigsaw : 0.732, class : 0.546 - acc jigsaw : 69.53, class : 63.28 [bs:128]
+60/92 of epoch 17/30 jigsaw : 0.616, class : 0.523 - acc jigsaw : 72.66, class : 64.06 [bs:128]
+90/92 of epoch 17/30 jigsaw : 0.639, class : 0.504 - acc jigsaw : 72.66, class : 66.41 [bs:128]
+Accuracies on val: jigsaw : 92.54, class : 79.76
+--------------------------------------------------------
+Accuracies on test: jigsaw : 85.25, class : 58.84
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 17
+New epoch - lr: 0.001
+0/92 of epoch 18/30 jigsaw : 0.666, class : 0.632 - acc jigsaw : 72.66, class : 72.66 [bs:128]
+30/92 of epoch 18/30 jigsaw : 0.708, class : 0.423 - acc jigsaw : 67.19, class : 69.53 [bs:128]
+60/92 of epoch 18/30 jigsaw : 0.671, class : 0.483 - acc jigsaw : 73.44, class : 68.75 [bs:128]
+90/92 of epoch 18/30 jigsaw : 0.652, class : 0.681 - acc jigsaw : 72.66, class : 67.19 [bs:128]
+Accuracies on val: jigsaw : 91.02, class : 78.77
+--------------------------------------------------------
+Accuracies on test: jigsaw : 87.10, class : 58.26
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 18
+New epoch - lr: 0.001
+0/92 of epoch 19/30 jigsaw : 0.615, class : 0.357 - acc jigsaw : 78.12, class : 64.84 [bs:128]
+30/92 of epoch 19/30 jigsaw : 0.657, class : 0.455 - acc jigsaw : 75.00, class : 62.50 [bs:128]
+60/92 of epoch 19/30 jigsaw : 0.783, class : 0.374 - acc jigsaw : 64.84, class : 69.53 [bs:128]
+90/92 of epoch 19/30 jigsaw : 0.651, class : 0.365 - acc jigsaw : 75.78, class : 73.44 [bs:128]
+Accuracies on val: jigsaw : 90.26, class : 79.07
+--------------------------------------------------------
+Accuracies on test: jigsaw : 84.59, class : 58.18
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 19
+New epoch - lr: 0.001
+0/92 of epoch 20/30 jigsaw : 0.555, class : 0.606 - acc jigsaw : 78.91, class : 67.97 [bs:128]
+30/92 of epoch 20/30 jigsaw : 0.614, class : 0.441 - acc jigsaw : 71.88, class : 62.50 [bs:128]
+60/92 of epoch 20/30 jigsaw : 0.652, class : 0.552 - acc jigsaw : 70.31, class : 59.38 [bs:128]
+90/92 of epoch 20/30 jigsaw : 0.668, class : 0.219 - acc jigsaw : 71.88, class : 75.78 [bs:128]
+Accuracies on val: jigsaw : 89.80, class : 79.53
+--------------------------------------------------------
+Accuracies on test: jigsaw : 83.31, class : 58.14
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 20
+New epoch - lr: 0.001
+0/92 of epoch 21/30 jigsaw : 0.656, class : 0.450 - acc jigsaw : 71.09, class : 65.62 [bs:128]
+30/92 of epoch 21/30 jigsaw : 0.615, class : 0.208 - acc jigsaw : 76.56, class : 72.66 [bs:128]
+60/92 of epoch 21/30 jigsaw : 0.610, class : 0.516 - acc jigsaw : 72.66, class : 63.28 [bs:128]
+90/92 of epoch 21/30 jigsaw : 0.617, class : 0.504 - acc jigsaw : 76.56, class : 68.75 [bs:128]
+Accuracies on val: jigsaw : 88.66, class : 79.83
+--------------------------------------------------------
+Accuracies on test: jigsaw : 78.86, class : 58.06
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 21
+New epoch - lr: 0.001
+0/92 of epoch 22/30 jigsaw : 0.675, class : 0.498 - acc jigsaw : 69.53, class : 67.97 [bs:128]
+30/92 of epoch 22/30 jigsaw : 0.614, class : 0.305 - acc jigsaw : 72.66, class : 74.22 [bs:128]
+60/92 of epoch 22/30 jigsaw : 0.717, class : 0.460 - acc jigsaw : 69.53, class : 64.84 [bs:128]
+90/92 of epoch 22/30 jigsaw : 0.630, class : 0.341 - acc jigsaw : 71.88, class : 67.19 [bs:128]
+Accuracies on val: jigsaw : 92.16, class : 79.68
+--------------------------------------------------------
+Accuracies on test: jigsaw : 86.03, class : 57.93
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 22
+New epoch - lr: 0.001
+0/92 of epoch 23/30 jigsaw : 0.466, class : 0.209 - acc jigsaw : 80.47, class : 73.44 [bs:128]
+30/92 of epoch 23/30 jigsaw : 0.608, class : 0.409 - acc jigsaw : 74.22, class : 67.97 [bs:128]
+60/92 of epoch 23/30 jigsaw : 0.574, class : 0.337 - acc jigsaw : 78.91, class : 68.75 [bs:128]
+90/92 of epoch 23/30 jigsaw : 0.562, class : 0.396 - acc jigsaw : 78.12, class : 71.09 [bs:128]
+Accuracies on val: jigsaw : 89.42, class : 80.14
+--------------------------------------------------------
+Accuracies on test: jigsaw : 82.08, class : 57.89
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 23
+New epoch - lr: 0.0001
+0/92 of epoch 24/30 jigsaw : 0.646, class : 0.259 - acc jigsaw : 70.31, class : 78.12 [bs:128]
+30/92 of epoch 24/30 jigsaw : 0.577, class : 0.315 - acc jigsaw : 79.69, class : 67.97 [bs:128]
+60/92 of epoch 24/30 jigsaw : 0.594, class : 0.348 - acc jigsaw : 72.66, class : 73.44 [bs:128]
+90/92 of epoch 24/30 jigsaw : 0.637, class : 0.266 - acc jigsaw : 71.09, class : 74.22 [bs:128]
+Accuracies on val: jigsaw : 90.56, class : 80.37
+--------------------------------------------------------
+Accuracies on test: jigsaw : 85.41, class : 58.06
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 24
+New epoch - lr: 0.0001
+0/92 of epoch 25/30 jigsaw : 0.587, class : 0.375 - acc jigsaw : 77.34, class : 72.66 [bs:128]
+30/92 of epoch 25/30 jigsaw : 0.586, class : 0.193 - acc jigsaw : 75.00, class : 71.88 [bs:128]
+60/92 of epoch 25/30 jigsaw : 0.631, class : 0.361 - acc jigsaw : 73.44, class : 63.28 [bs:128]
+90/92 of epoch 25/30 jigsaw : 0.624, class : 0.315 - acc jigsaw : 75.00, class : 73.44 [bs:128]
+Accuracies on val: jigsaw : 90.72, class : 80.75
+--------------------------------------------------------
+Accuracies on test: jigsaw : 85.62, class : 58.34
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 25
+New epoch - lr: 0.0001
+0/92 of epoch 26/30 jigsaw : 0.543, class : 0.440 - acc jigsaw : 82.03, class : 69.53 [bs:128]
+30/92 of epoch 26/30 jigsaw : 0.611, class : 0.189 - acc jigsaw : 77.34, class : 71.88 [bs:128]
+60/92 of epoch 26/30 jigsaw : 0.780, class : 0.397 - acc jigsaw : 66.41, class : 68.75 [bs:128]
+90/92 of epoch 26/30 jigsaw : 0.535, class : 0.261 - acc jigsaw : 77.34, class : 78.12 [bs:128]
+Accuracies on val: jigsaw : 90.03, class : 80.52
+--------------------------------------------------------
+Accuracies on test: jigsaw : 84.84, class : 58.30
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 26
+New epoch - lr: 0.0001
+0/92 of epoch 27/30 jigsaw : 0.623, class : 0.257 - acc jigsaw : 76.56, class : 68.75 [bs:128]
+30/92 of epoch 27/30 jigsaw : 0.693, class : 0.280 - acc jigsaw : 74.22, class : 72.66 [bs:128]
+60/92 of epoch 27/30 jigsaw : 0.631, class : 0.305 - acc jigsaw : 71.88, class : 73.44 [bs:128]
+90/92 of epoch 27/30 jigsaw : 0.438, class : 0.340 - acc jigsaw : 86.72, class : 78.12 [bs:128]
+Accuracies on val: jigsaw : 90.26, class : 80.67
+--------------------------------------------------------
+Accuracies on test: jigsaw : 85.46, class : 58.30
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 27
+New epoch - lr: 0.0001
+0/92 of epoch 28/30 jigsaw : 0.654, class : 0.283 - acc jigsaw : 77.34, class : 74.22 [bs:128]
+30/92 of epoch 28/30 jigsaw : 0.527, class : 0.313 - acc jigsaw : 82.03, class : 72.66 [bs:128]
+60/92 of epoch 28/30 jigsaw : 0.553, class : 0.480 - acc jigsaw : 78.12, class : 67.19 [bs:128]
+90/92 of epoch 28/30 jigsaw : 0.546, class : 0.306 - acc jigsaw : 79.69, class : 72.66 [bs:128]
+Accuracies on val: jigsaw : 89.95, class : 80.06
+--------------------------------------------------------
+Accuracies on test: jigsaw : 85.21, class : 58.67
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 28
+New epoch - lr: 0.0001
+0/92 of epoch 29/30 jigsaw : 0.681, class : 0.362 - acc jigsaw : 72.66, class : 73.44 [bs:128]
+30/92 of epoch 29/30 jigsaw : 0.624, class : 0.382 - acc jigsaw : 75.78, class : 67.97 [bs:128]
+60/92 of epoch 29/30 jigsaw : 0.597, class : 0.383 - acc jigsaw : 77.34, class : 69.53 [bs:128]
+90/92 of epoch 29/30 jigsaw : 0.549, class : 0.404 - acc jigsaw : 75.00, class : 76.56 [bs:128]
+Accuracies on val: jigsaw : 90.18, class : 80.59
+--------------------------------------------------------
+Accuracies on test: jigsaw : 85.00, class : 58.26
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 29
+New epoch - lr: 0.0001
+0/92 of epoch 30/30 jigsaw : 0.530, class : 0.312 - acc jigsaw : 77.34, class : 75.78 [bs:128]
+30/92 of epoch 30/30 jigsaw : 0.620, class : 0.346 - acc jigsaw : 75.78, class : 71.09 [bs:128]
+60/92 of epoch 30/30 jigsaw : 0.569, class : 0.365 - acc jigsaw : 75.00, class : 68.75 [bs:128]
+90/92 of epoch 30/30 jigsaw : 0.658, class : 0.332 - acc jigsaw : 75.00, class : 72.66 [bs:128]
+Accuracies on val: jigsaw : 90.26, class : 80.21
+--------------------------------------------------------
+Accuracies on test: jigsaw : 85.66, class : 57.93
+--------------------------------------------------------
+2019-12-16 04:50:51
+art
+['clipart', 'product', 'real_world']
+unsupervised_task_weight: 0.8
+bias_hole_image: 0.4
+only_classify the ordered image: True
+Highest accuracy on validation set appears on epoch  tensor(24)
+Highest accuracy on test set appears on epoch  tensor(16)
+Accuracy on test set when the accuracy on validation set is highest:0.583
+Highest accuracy on test set:0.588
+It took 3080.18
+--------------------------------------------------------
+******************Start training**************************************
+--------------------------------------------------------
+Dataset size: trainer 10103, val 1120, test 4365
+--------------------------------------------------------
+Namespace(TTA=False, batch_size=128, bias_whole_image=0.4, classify_only_ordered_images_or_not=True, domains_list=['art', 'clipart', 'product', 'real_world'], epochs=30, folder_name='test', image_size=222, jitter=0.4, learning_rate=0.001, limit_source=None, limit_target=None, max_scale=1.0, min_scale=0.8, n_classes=65, nesterov=False, network='resnet18', ooo_weight=0, parameters_lists=[[0.8, 0.4]], random_horiz_flip=0.5, repeat_times=1, source=['art', 'product', 'real_world'], suffix='', target='clipart', target_domain_list=['art', 'clipart'], tf_logger=True, tile_random_grayscale=0.1, train_all=True, unsupervised_task_weight=0.8, val_size=0.1)
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 0
+New epoch - lr: 0.001
+0/78 of epoch 1/30 jigsaw : 1.665, class : 4.451 - acc jigsaw : 15.62, class : 1.56 [bs:128]
+30/78 of epoch 1/30 jigsaw : 1.234, class : 3.830 - acc jigsaw : 53.12, class : 10.94 [bs:128]
+60/78 of epoch 1/30 jigsaw : 1.179, class : 3.242 - acc jigsaw : 53.91, class : 28.12 [bs:128]
+Accuracies on val: jigsaw : 97.77, class : 35.89
+--------------------------------------------------------
+Accuracies on test: jigsaw : 98.19, class : 20.69
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 1
+New epoch - lr: 0.001
+0/78 of epoch 2/30 jigsaw : 1.002, class : 2.956 - acc jigsaw : 59.38, class : 40.62 [bs:128]
+30/78 of epoch 2/30 jigsaw : 1.100, class : 2.630 - acc jigsaw : 53.91, class : 35.16 [bs:128]
+60/78 of epoch 2/30 jigsaw : 0.952, class : 2.075 - acc jigsaw : 59.38, class : 50.78 [bs:128]
+Accuracies on val: jigsaw : 95.09, class : 60.18
+--------------------------------------------------------
+Accuracies on test: jigsaw : 93.65, class : 35.44
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 2
+New epoch - lr: 0.001
+0/78 of epoch 3/30 jigsaw : 0.995, class : 1.865 - acc jigsaw : 60.16, class : 60.94 [bs:128]
+30/78 of epoch 3/30 jigsaw : 0.888, class : 1.729 - acc jigsaw : 64.84, class : 48.44 [bs:128]
+60/78 of epoch 3/30 jigsaw : 0.915, class : 1.549 - acc jigsaw : 60.94, class : 52.34 [bs:128]
+Accuracies on val: jigsaw : 96.16, class : 67.32
+--------------------------------------------------------
+Accuracies on test: jigsaw : 94.87, class : 39.38
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 3
+New epoch - lr: 0.001
+0/78 of epoch 4/30 jigsaw : 0.797, class : 1.602 - acc jigsaw : 65.62, class : 61.72 [bs:128]
+30/78 of epoch 4/30 jigsaw : 0.949, class : 1.434 - acc jigsaw : 60.16, class : 54.69 [bs:128]
+60/78 of epoch 4/30 jigsaw : 1.007, class : 1.543 - acc jigsaw : 57.03, class : 47.66 [bs:128]
+Accuracies on val: jigsaw : 95.36, class : 71.16
+--------------------------------------------------------
+Accuracies on test: jigsaw : 92.19, class : 42.11
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 4
+New epoch - lr: 0.001
+0/78 of epoch 5/30 jigsaw : 0.864, class : 1.286 - acc jigsaw : 63.28, class : 60.16 [bs:128]
+30/78 of epoch 5/30 jigsaw : 0.874, class : 1.379 - acc jigsaw : 66.41, class : 59.38 [bs:128]
+60/78 of epoch 5/30 jigsaw : 0.893, class : 1.167 - acc jigsaw : 58.59, class : 61.72 [bs:128]
+Accuracies on val: jigsaw : 93.93, class : 74.73
+--------------------------------------------------------
+Accuracies on test: jigsaw : 86.25, class : 43.07
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 5
+New epoch - lr: 0.001
+0/78 of epoch 6/30 jigsaw : 0.877, class : 1.018 - acc jigsaw : 57.81, class : 58.59 [bs:128]
+30/78 of epoch 6/30 jigsaw : 0.813, class : 1.045 - acc jigsaw : 60.94, class : 60.94 [bs:128]
+60/78 of epoch 6/30 jigsaw : 0.862, class : 0.974 - acc jigsaw : 61.72, class : 63.28 [bs:128]
+Accuracies on val: jigsaw : 95.36, class : 76.79
+--------------------------------------------------------
+Accuracies on test: jigsaw : 91.11, class : 44.90
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 6
+New epoch - lr: 0.001
+0/78 of epoch 7/30 jigsaw : 0.853, class : 0.849 - acc jigsaw : 68.75, class : 67.19 [bs:128]
+30/78 of epoch 7/30 jigsaw : 0.796, class : 0.911 - acc jigsaw : 65.62, class : 65.62 [bs:128]
+60/78 of epoch 7/30 jigsaw : 0.744, class : 0.995 - acc jigsaw : 67.19, class : 56.25 [bs:128]
+Accuracies on val: jigsaw : 95.00, class : 77.23
+--------------------------------------------------------
+Accuracies on test: jigsaw : 90.95, class : 45.61
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 7
+New epoch - lr: 0.001
+0/78 of epoch 8/30 jigsaw : 0.753, class : 1.007 - acc jigsaw : 67.97, class : 56.25 [bs:128]
+30/78 of epoch 8/30 jigsaw : 0.711, class : 0.881 - acc jigsaw : 71.09, class : 66.41 [bs:128]
+60/78 of epoch 8/30 jigsaw : 0.773, class : 0.761 - acc jigsaw : 64.84, class : 64.06 [bs:128]
+Accuracies on val: jigsaw : 93.93, class : 79.11
+--------------------------------------------------------
+Accuracies on test: jigsaw : 88.32, class : 44.90
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 8
+New epoch - lr: 0.001
+0/78 of epoch 9/30 jigsaw : 0.709, class : 0.875 - acc jigsaw : 67.19, class : 67.19 [bs:128]
+30/78 of epoch 9/30 jigsaw : 0.773, class : 0.746 - acc jigsaw : 68.75, class : 71.09 [bs:128]
+60/78 of epoch 9/30 jigsaw : 0.648, class : 0.829 - acc jigsaw : 75.78, class : 60.16 [bs:128]
+Accuracies on val: jigsaw : 93.21, class : 79.02
+--------------------------------------------------------
+Accuracies on test: jigsaw : 82.36, class : 46.00
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 9
+New epoch - lr: 0.001
+0/78 of epoch 10/30 jigsaw : 0.822, class : 0.576 - acc jigsaw : 69.53, class : 64.84 [bs:128]
+30/78 of epoch 10/30 jigsaw : 0.779, class : 0.909 - acc jigsaw : 67.19, class : 64.84 [bs:128]
+60/78 of epoch 10/30 jigsaw : 0.639, class : 0.812 - acc jigsaw : 67.97, class : 62.50 [bs:128]
+Accuracies on val: jigsaw : 93.21, class : 80.00
+--------------------------------------------------------
+Accuracies on test: jigsaw : 85.96, class : 46.46
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 10
+New epoch - lr: 0.001
+0/78 of epoch 11/30 jigsaw : 0.775, class : 0.696 - acc jigsaw : 63.28, class : 67.19 [bs:128]
+30/78 of epoch 11/30 jigsaw : 0.714, class : 0.888 - acc jigsaw : 69.53, class : 64.84 [bs:128]
+60/78 of epoch 11/30 jigsaw : 0.658, class : 0.820 - acc jigsaw : 78.12, class : 63.28 [bs:128]
+Accuracies on val: jigsaw : 94.29, class : 81.07
+--------------------------------------------------------
+Accuracies on test: jigsaw : 85.61, class : 47.42
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 11
+New epoch - lr: 0.001
+0/78 of epoch 12/30 jigsaw : 0.615, class : 0.709 - acc jigsaw : 71.88, class : 67.97 [bs:128]
+30/78 of epoch 12/30 jigsaw : 0.716, class : 0.521 - acc jigsaw : 71.09, class : 65.62 [bs:128]
+60/78 of epoch 12/30 jigsaw : 0.685, class : 0.505 - acc jigsaw : 71.09, class : 69.53 [bs:128]
+Accuracies on val: jigsaw : 93.75, class : 81.07
+--------------------------------------------------------
+Accuracies on test: jigsaw : 87.63, class : 47.26
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 12
+New epoch - lr: 0.001
+0/78 of epoch 13/30 jigsaw : 0.651, class : 0.770 - acc jigsaw : 74.22, class : 62.50 [bs:128]
+30/78 of epoch 13/30 jigsaw : 0.760, class : 0.582 - acc jigsaw : 62.50, class : 68.75 [bs:128]
+60/78 of epoch 13/30 jigsaw : 0.734, class : 0.936 - acc jigsaw : 70.31, class : 62.50 [bs:128]
+Accuracies on val: jigsaw : 93.21, class : 81.25
+--------------------------------------------------------
+Accuracies on test: jigsaw : 84.93, class : 47.72
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 13
+New epoch - lr: 0.001
+0/78 of epoch 14/30 jigsaw : 0.645, class : 0.663 - acc jigsaw : 67.97, class : 73.44 [bs:128]
+30/78 of epoch 14/30 jigsaw : 0.581, class : 0.589 - acc jigsaw : 75.78, class : 69.53 [bs:128]
+60/78 of epoch 14/30 jigsaw : 0.743, class : 0.494 - acc jigsaw : 64.84, class : 59.38 [bs:128]
+Accuracies on val: jigsaw : 93.48, class : 81.70
+--------------------------------------------------------
+Accuracies on test: jigsaw : 79.56, class : 48.02
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 14
+New epoch - lr: 0.001
+0/78 of epoch 15/30 jigsaw : 0.671, class : 0.796 - acc jigsaw : 68.75, class : 66.41 [bs:128]
+30/78 of epoch 15/30 jigsaw : 0.670, class : 0.675 - acc jigsaw : 71.88, class : 71.09 [bs:128]
+60/78 of epoch 15/30 jigsaw : 0.692, class : 0.481 - acc jigsaw : 71.88, class : 73.44 [bs:128]
+Accuracies on val: jigsaw : 95.00, class : 80.62
+--------------------------------------------------------
+Accuracies on test: jigsaw : 83.92, class : 47.61
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 15
+New epoch - lr: 0.001
+0/78 of epoch 16/30 jigsaw : 0.641, class : 0.484 - acc jigsaw : 76.56, class : 68.75 [bs:128]
+30/78 of epoch 16/30 jigsaw : 0.711, class : 0.549 - acc jigsaw : 72.66, class : 74.22 [bs:128]
+60/78 of epoch 16/30 jigsaw : 0.766, class : 0.538 - acc jigsaw : 73.44, class : 70.31 [bs:128]
+Accuracies on val: jigsaw : 92.77, class : 81.43
+--------------------------------------------------------
+Accuracies on test: jigsaw : 77.78, class : 48.77
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 16
+New epoch - lr: 0.001
+0/78 of epoch 17/30 jigsaw : 0.628, class : 0.472 - acc jigsaw : 71.88, class : 67.97 [bs:128]
+30/78 of epoch 17/30 jigsaw : 0.596, class : 0.465 - acc jigsaw : 75.00, class : 69.53 [bs:128]
+60/78 of epoch 17/30 jigsaw : 0.613, class : 0.506 - acc jigsaw : 78.91, class : 64.06 [bs:128]
+Accuracies on val: jigsaw : 94.46, class : 82.68
+--------------------------------------------------------
+Accuracies on test: jigsaw : 80.71, class : 49.00
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 17
+New epoch - lr: 0.001
+0/78 of epoch 18/30 jigsaw : 0.661, class : 0.360 - acc jigsaw : 77.34, class : 76.56 [bs:128]
+30/78 of epoch 18/30 jigsaw : 0.549, class : 0.490 - acc jigsaw : 75.00, class : 64.84 [bs:128]
+60/78 of epoch 18/30 jigsaw : 0.609, class : 0.376 - acc jigsaw : 78.12, class : 65.62 [bs:128]
+Accuracies on val: jigsaw : 93.39, class : 82.59
+--------------------------------------------------------
+Accuracies on test: jigsaw : 79.22, class : 47.93
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 18
+New epoch - lr: 0.001
+0/78 of epoch 19/30 jigsaw : 0.523, class : 0.477 - acc jigsaw : 81.25, class : 75.78 [bs:128]
+30/78 of epoch 19/30 jigsaw : 0.548, class : 0.431 - acc jigsaw : 78.12, class : 82.03 [bs:128]
+60/78 of epoch 19/30 jigsaw : 0.531, class : 0.474 - acc jigsaw : 79.69, class : 69.53 [bs:128]
+Accuracies on val: jigsaw : 93.30, class : 82.59
+--------------------------------------------------------
+Accuracies on test: jigsaw : 79.15, class : 48.93
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 19
+New epoch - lr: 0.001
+0/78 of epoch 20/30 jigsaw : 0.715, class : 0.429 - acc jigsaw : 73.44, class : 74.22 [bs:128]
+30/78 of epoch 20/30 jigsaw : 0.692, class : 0.417 - acc jigsaw : 72.66, class : 66.41 [bs:128]
+60/78 of epoch 20/30 jigsaw : 0.550, class : 0.457 - acc jigsaw : 75.78, class : 71.09 [bs:128]
+Accuracies on val: jigsaw : 92.59, class : 82.50
+--------------------------------------------------------
+Accuracies on test: jigsaw : 77.55, class : 48.00
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 20
+New epoch - lr: 0.001
+0/78 of epoch 21/30 jigsaw : 0.671, class : 0.464 - acc jigsaw : 74.22, class : 69.53 [bs:128]
+30/78 of epoch 21/30 jigsaw : 0.545, class : 0.374 - acc jigsaw : 77.34, class : 71.88 [bs:128]
+60/78 of epoch 21/30 jigsaw : 0.552, class : 0.394 - acc jigsaw : 73.44, class : 68.75 [bs:128]
+Accuracies on val: jigsaw : 94.29, class : 82.50
+--------------------------------------------------------
+Accuracies on test: jigsaw : 81.19, class : 47.65
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 21
+New epoch - lr: 0.001
+0/78 of epoch 22/30 jigsaw : 0.631, class : 0.589 - acc jigsaw : 78.91, class : 64.06 [bs:128]
+30/78 of epoch 22/30 jigsaw : 0.549, class : 0.375 - acc jigsaw : 78.12, class : 68.75 [bs:128]
+60/78 of epoch 22/30 jigsaw : 0.651, class : 0.402 - acc jigsaw : 69.53, class : 71.09 [bs:128]
+Accuracies on val: jigsaw : 90.27, class : 81.88
+--------------------------------------------------------
+Accuracies on test: jigsaw : 73.91, class : 48.80
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 22
+New epoch - lr: 0.001
+0/78 of epoch 23/30 jigsaw : 0.579, class : 0.384 - acc jigsaw : 73.44, class : 74.22 [bs:128]
+30/78 of epoch 23/30 jigsaw : 0.564, class : 0.397 - acc jigsaw : 75.00, class : 72.66 [bs:128]
+60/78 of epoch 23/30 jigsaw : 0.604, class : 0.516 - acc jigsaw : 75.78, class : 63.28 [bs:128]
+Accuracies on val: jigsaw : 91.25, class : 83.21
+--------------------------------------------------------
+Accuracies on test: jigsaw : 75.72, class : 48.38
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 23
+New epoch - lr: 0.0001
+0/78 of epoch 24/30 jigsaw : 0.539, class : 0.309 - acc jigsaw : 82.03, class : 74.22 [bs:128]
+30/78 of epoch 24/30 jigsaw : 0.605, class : 0.307 - acc jigsaw : 75.78, class : 72.66 [bs:128]
+60/78 of epoch 24/30 jigsaw : 0.459, class : 0.330 - acc jigsaw : 81.25, class : 71.09 [bs:128]
+Accuracies on val: jigsaw : 92.41, class : 82.32
+--------------------------------------------------------
+Accuracies on test: jigsaw : 77.66, class : 48.64
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 24
+New epoch - lr: 0.0001
+0/78 of epoch 25/30 jigsaw : 0.638, class : 0.358 - acc jigsaw : 77.34, class : 67.97 [bs:128]
+30/78 of epoch 25/30 jigsaw : 0.515, class : 0.344 - acc jigsaw : 79.69, class : 68.75 [bs:128]
+60/78 of epoch 25/30 jigsaw : 0.609, class : 0.353 - acc jigsaw : 80.47, class : 68.75 [bs:128]
+Accuracies on val: jigsaw : 93.04, class : 82.59
+--------------------------------------------------------
+Accuracies on test: jigsaw : 78.53, class : 48.93
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 25
+New epoch - lr: 0.0001
+0/78 of epoch 26/30 jigsaw : 0.615, class : 0.426 - acc jigsaw : 76.56, class : 66.41 [bs:128]
+30/78 of epoch 26/30 jigsaw : 0.555, class : 0.306 - acc jigsaw : 77.34, class : 75.78 [bs:128]
+60/78 of epoch 26/30 jigsaw : 0.512, class : 0.366 - acc jigsaw : 77.34, class : 71.88 [bs:128]
+Accuracies on val: jigsaw : 92.23, class : 82.50
+--------------------------------------------------------
+Accuracies on test: jigsaw : 76.01, class : 48.48
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 26
+New epoch - lr: 0.0001
+0/78 of epoch 27/30 jigsaw : 0.651, class : 0.359 - acc jigsaw : 71.09, class : 70.31 [bs:128]
+30/78 of epoch 27/30 jigsaw : 0.541, class : 0.279 - acc jigsaw : 78.12, class : 71.88 [bs:128]
+60/78 of epoch 27/30 jigsaw : 0.556, class : 0.439 - acc jigsaw : 80.47, class : 64.84 [bs:128]
+Accuracies on val: jigsaw : 92.77, class : 82.95
+--------------------------------------------------------
+Accuracies on test: jigsaw : 76.66, class : 48.77
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 27
+New epoch - lr: 0.0001
+0/78 of epoch 28/30 jigsaw : 0.443, class : 0.280 - acc jigsaw : 81.25, class : 76.56 [bs:128]
+30/78 of epoch 28/30 jigsaw : 0.404, class : 0.361 - acc jigsaw : 85.16, class : 71.09 [bs:128]
+60/78 of epoch 28/30 jigsaw : 0.574, class : 0.317 - acc jigsaw : 77.34, class : 71.09 [bs:128]
+Accuracies on val: jigsaw : 91.96, class : 82.68
+--------------------------------------------------------
+Accuracies on test: jigsaw : 75.99, class : 48.98
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 28
+New epoch - lr: 0.0001
+0/78 of epoch 29/30 jigsaw : 0.463, class : 0.331 - acc jigsaw : 78.12, class : 72.66 [bs:128]
+30/78 of epoch 29/30 jigsaw : 0.645, class : 0.522 - acc jigsaw : 69.53, class : 70.31 [bs:128]
+60/78 of epoch 29/30 jigsaw : 0.447, class : 0.310 - acc jigsaw : 85.16, class : 68.75 [bs:128]
+Accuracies on val: jigsaw : 91.61, class : 82.32
+--------------------------------------------------------
+Accuracies on test: jigsaw : 75.58, class : 48.57
+--------------------------------------------------------
+--------------------------------------------------------
+current epoch:%d 29
+New epoch - lr: 0.0001
+0/78 of epoch 30/30 jigsaw : 0.415, class : 0.394 - acc jigsaw : 85.94, class : 77.34 [bs:128]
+30/78 of epoch 30/30 jigsaw : 0.567, class : 0.326 - acc jigsaw : 78.12, class : 74.22 [bs:128]
+60/78 of epoch 30/30 jigsaw : 0.619, class : 0.405 - acc jigsaw : 76.56, class : 67.19 [bs:128]
+Accuracies on val: jigsaw : 91.88, class : 82.32
+--------------------------------------------------------
+Accuracies on test: jigsaw : 75.99, class : 49.12
+--------------------------------------------------------
+2019-12-16 05:41:13
+clipart
+['art', 'product', 'real_world']
+unsupervised_task_weight: 0.8
+bias_hole_image: 0.4
+only_classify the ordered image: True
+Highest accuracy on validation set appears on epoch  tensor(22)
+Highest accuracy on test set appears on epoch  tensor(29)
+Accuracy on test set when the accuracy on validation set is highest:0.484
+Highest accuracy on test set:0.491
+It took 3021.16
+--------------------------------------------------------
