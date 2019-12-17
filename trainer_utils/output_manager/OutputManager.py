@@ -8,10 +8,19 @@ class OutputManager:
         if not os.path.exists(output_file_path):
             os.makedirs(output_file_path)
 
-    def write_to_output_file(self, str_list):
+    def write_to_output_file(self, input_list):
         with open(self.output_file_path+self.output_file_name, 'a') as f:
-            for str in str_list:
-                f.write(str+'\n')
+            for i in input_list:
+                string = i
+                if isinstance(i, list):
+                    string = ""
+                    for j in i:
+                        string = string+j+' '
+
+                f.write(string + '\n')
+
+
+
 
     def read_from_output_file(self):
         with open(self.output_file_path+self.output_file_name, 'r') as f:

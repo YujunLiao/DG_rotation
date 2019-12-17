@@ -10,6 +10,7 @@ import bisect
 import warnings
 from trainer_utils.data_loader.dataset.MyDataset import MyDataset
 from torch.utils.data import Dataset
+from os.path import join, dirname
 
 
 class DAJigsawDataset():
@@ -141,7 +142,9 @@ class JigsawTrainDataset(data.Dataset):
 
 
     def __retrieve_permutations(self, file_number):
-        all_perm = np.load('permutations_%d.npy' % (file_number))
+        path = join(dirname(__file__),'permutations_%d.npy' % (file_number))
+        # all_perm = np.load(path+'permutations_%d.npy' % (file_number))
+        all_perm = np.load(path)
         # from range [1,9] to [0,8]
         if all_perm.min() == 1:
             all_perm = all_perm - 1

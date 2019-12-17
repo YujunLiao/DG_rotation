@@ -211,7 +211,8 @@ class DAJigsawTrainer:
         self.output_manager.write_to_output_file([
             '--------------------------------------------------------',
             str(strftime("%Y-%m-%d %H:%M:%S", localtime()) ),
-            self.training_arguments.target,
+            self.training_arguments.source,
+            "target domain:" + self.training_arguments.target,
             "jigweight:" + str(self.training_arguments.unsupervised_task_weight),
             "bias_hole_image:"+ str(self.training_arguments.bias_whole_image),
             "target_rotation_weight:" + str(self.training_arguments.target_domain_unsupervised_task_loss_weight),
