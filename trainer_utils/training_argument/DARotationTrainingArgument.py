@@ -33,7 +33,7 @@ class DARotationTrainingArgument(argparse.ArgumentParser):
         self.add_argument("--source", choices=available_domains, help="Source", nargs='+')
         self.add_argument("--target", choices=available_domains, help="Target")
         self.add_argument("--n_classes", "-c", type=int, help="Number of classes")
-        # parser.add_argument("--jigsaw_n_classes", "-jc", type=int, default=31, help="Number of classes for the jigsaw task")
+        self.add_argument("--number_of_unsupervised_classes", type=int, default=4, help="Number of classes for the jigsaw task")
         self.add_argument("--unsupervised_task_weight", type=float, help="Weight for the unsupervised task")
         self.add_argument("--target_domain_unsupervised_task_loss_weight", type=float)
         self.add_argument("--entropy_loss_weight", type=float)

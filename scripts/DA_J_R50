@@ -15,6 +15,7 @@ CUDA_VISIBLE_DEVICES=$1 \
 --n_classes 7 \
 --repeat_times 3 \
 --network resnet50  --epochs 2 \
+--limit_source 100 --limit_target 100 \
 --classify_only_ordered_images_or_not True  --TTA False --nesterov False \
 --batch_size 128   --image_size 222 \
 --learning_rate 0.001 --val_size 0.1  \

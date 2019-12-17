@@ -21,7 +21,7 @@ class DARotationDataset():
         img_transformer, tile_transformer = self._get_train_transformers(training_arguments)
         val_transformer = self._get_val_transformer(training_arguments)
 
-        train_dataset = DARotationTrainDataset(
+        train_dataset = RotationTrainDataset(
             my_dataset.train_dataset['train_data_paths'],
             my_dataset.train_dataset['train_labels'],
             is_patch_based_or_not=is_patch_based_or_not,
@@ -37,7 +37,7 @@ class DARotationDataset():
 
 
 
-        validation_dataset = DARotationTestDataset(
+        validation_dataset = RotationTestDataset(
             my_dataset.validation_dataset['validation_data_paths'],
             my_dataset.validation_dataset['validation_labels'],
             img_transformer=val_transformer,
@@ -49,7 +49,7 @@ class DARotationDataset():
 
 
 
-        test_dataset = DARotationTestDataset(
+        test_dataset = RotationTestDataset(
             my_dataset.test_dataset['test_data_paths'],
             my_dataset.test_dataset['test_labels'],
             is_patch_based_or_not=is_patch_based_or_not,
@@ -86,7 +86,7 @@ class DARotationDataset():
         return transforms.Compose(img_tr)
 
 
-class DARotationTrainDataset(data.Dataset):
+class RotationTrainDataset(data.Dataset):
     def __init__(self, data_paths, labels, img_transformer=None, tile_transformer=None, is_patch_based_or_not=False, percent_of_original_image=None):
 
         self._data_path = ""
@@ -179,19 +179,19 @@ class DARotationTrainDataset(data.Dataset):
     #     return all_perm
 
 
-class DARotationTestDataset(DARotationTrainDataset):
+class RotationTestDataset(RotationTrainDataset):
     def __init__(self, *args, **xargs):
         super().__init__(*args, **xargs)
 
     def __getitem__(self, index):
         # framename = self.data_path + '/' + self.data_paths[index]
         # img = Image.open(framename).convert('RGB')
-        img = super(DARotationTestDataset, self)._get_image_of_index(index)
+        img = super(RotationTestDataset, self)._get_image_of_index(index)
         # return self._image_transformer(img), 0, int(self.labels[index])
         return img, 0, int(self._labels[index])
 
 
-class DARotationTestDatasetMultiple(DARotationTrainDataset):
+class RotationTestDatasetMultiple(RotationTrainDataset):
     def __init__(self, *args, **xargs):
         super().__init__(*args, **xargs)
         self._image_transformer = transforms.Compose([
@@ -271,7 +271,7 @@ class ConcatDataset(Dataset):
         return r
 
     def isMulti(self):
-        return isinstance(self.datasets[0], DARotationTestDatasetMultiple)
+        return isinstance(self.datasets[0], RotationTestDatasetMultiple)
 
     def __init__(self, datasets):
         super(ConcatDataset, self).__init__()

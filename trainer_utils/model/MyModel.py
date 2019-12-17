@@ -32,7 +32,7 @@ class MyModel:
 
             # When using rotation technology as the unsupervised task, there are in total
             # 4 classes, which are original one, 90, 180, 270 degree.
-            jigsaw_classes=4,
+            jigsaw_classes=my_training_arguments.training_arguments.number_of_unsupervised_classes,
             classes=my_training_arguments.training_arguments.n_classes
         )
 

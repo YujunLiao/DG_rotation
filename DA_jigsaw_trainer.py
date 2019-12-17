@@ -9,7 +9,7 @@ from torch import nn
 from torch.nn import functional as F
 from time import time, strftime, localtime
 
-from trainer_utils.model.JigsawModel import JigsawModel
+from trainer_utils.model.MyModel import MyModel
 
 from trainer_utils.logger.Logger import Logger
 from trainer_utils.training_argument.DAjigsawTrainingArgument import DAJigsawTrainingArgument
@@ -227,7 +227,7 @@ class DAJigsawTrainer:
         return self.logger, self.model
 
 def lazy_train(my_training_arguments, output_manager):
-    my_model = JigsawModel(my_training_arguments)
+    my_model = MyModel(my_training_arguments)
     is_patch_based_or_not = my_model.model.is_patch_based()
     my_data_loader = DAJigsawDataLoader(my_training_arguments, is_patch_based_or_not)
     my_optimizer = MyOptimizer(my_training_arguments, my_model)

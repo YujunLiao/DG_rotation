@@ -21,7 +21,7 @@ class DAJigsawDataset():
         img_transformer, tile_transformer = self._get_train_transformers(training_arguments)
         val_transformer = self._get_val_transformer(training_arguments)
 
-        source_domain_train_dataset = DAJigsawTrainDataset(
+        source_domain_train_dataset = JigsawTrainDataset(
             my_dataset.train_dataset['train_data_paths'],
             my_dataset.train_dataset['train_labels'],
             number_of_unsupervised_classes=my_training_arguments.training_arguments.number_of_unsupervised_classes,
@@ -36,7 +36,7 @@ class DAJigsawDataset():
 
         self.source_domain_train_dataset = ConcatDataset([source_domain_train_dataset])
 
-        target_domain_train_dataset = DAJigsawTrainDataset(
+        target_domain_train_dataset = JigsawTrainDataset(
             my_dataset.test_dataset['test_data_paths'],
             my_dataset.test_dataset['test_labels'],
             number_of_unsupervised_classes=my_training_arguments.training_arguments.number_of_unsupervised_classes,
@@ -52,7 +52,7 @@ class DAJigsawDataset():
         self.target_domain_train_dataset = ConcatDataset([target_domain_train_dataset])
 
 
-        validation_dataset = DAJigsawTestDataset(
+        validation_dataset = JigsawTestDataset(
             my_dataset.validation_dataset['validation_data_paths'],
             my_dataset.validation_dataset['validation_labels'],
             number_of_unsupervised_classes=my_training_arguments.training_arguments.number_of_unsupervised_classes,
@@ -65,7 +65,7 @@ class DAJigsawDataset():
 
 
 
-        test_dataset = DAJigsawTestDataset(
+        test_dataset = JigsawTestDataset(
             my_dataset.test_dataset['test_data_paths'],
             my_dataset.test_dataset['test_labels'],
             number_of_unsupervised_classes=my_training_arguments.training_arguments.number_of_unsupervised_classes,
@@ -103,7 +103,7 @@ class DAJigsawDataset():
         return transforms.Compose(img_tr)
 
 
-class DAJigsawTrainDataset(data.Dataset):
+class JigsawTrainDataset(data.Dataset):
     def __init__(self, data_paths, labels, number_of_unsupervised_classes, img_transformer=None, tile_transformer=None, is_patch_based_or_not=False, percent_of_original_image=None):
         """
         number_of_unsupervised_classes means the total number of unsupervised classes.
@@ -215,19 +215,19 @@ class DAJigsawTrainDataset(data.Dataset):
     #     return all_perm
 
 
-class DAJigsawTestDataset(DAJigsawTrainDataset):
+class JigsawTestDataset(JigsawTrainDataset):
     def __init__(self, *args, **xargs):
         super().__init__(*args, **xargs)
 
     def __getitem__(self, index):
         # framename = self.data_path + '/' + self.data_paths[index]
         # img = Image.open(framename).convert('RGB')
-        img = super(DAJigsawTestDataset, self)._get_image_of_index(index)
+        img = super(JigsawTestDataset, self)._get_image_of_index(index)
         # return self._image_transformer(img), 0, int(self.labels[index])
         return img, 0, int(self._labels[index])
 
 
-class DAJigsawTestDatasetMultiple(DAJigsawTrainDataset):
+class JigsawTestDatasetMultiple(JigsawTrainDataset):
     def __init__(self, *args, **xargs):
         super().__init__(*args, **xargs)
         self._image_transformer = transforms.Compose([
@@ -307,7 +307,7 @@ class ConcatDataset(Dataset):
         return r
 
     def isMulti(self):
-        return isinstance(self.datasets[0], DAJigsawTestDatasetMultiple)
+        return isinstance(self.datasets[0], JigsawTestDatasetMultiple)
 
     def __init__(self, datasets):
         super(ConcatDataset, self).__init__()

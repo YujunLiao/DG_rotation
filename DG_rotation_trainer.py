@@ -9,7 +9,9 @@ from torch import nn
 from torch.nn import functional as F
 from time import time, strftime, localtime
 
+# from trainer_utils.model.MyModel import MyModel
 from trainer_utils.model.MyModel import MyModel
+
 
 from trainer_utils.logger.Logger import Logger
 from trainer_utils.training_argument.DGRotationTrainingArgument import DGRotationTrainingArgument
