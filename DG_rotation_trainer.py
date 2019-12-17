@@ -238,11 +238,12 @@ if __name__ == "__main__":
             output_manager = OutputManager(
                 output_file_path= \
                 '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' +\
-                "DG_rotation_" + \
-                my_training_arguments.training_arguments.network + '_' + \
-                my_training_arguments.training_arguments.target + '_' + \
-                str(my_training_arguments.training_arguments.unsupervised_task_weight)+ '_'+\
-                str(my_training_arguments.training_arguments.bias_whole_image)
+                "DG_rotation/" + \
+                my_training_arguments.training_arguments.network + '/' + \
+                str(my_training_arguments.training_arguments.unsupervised_task_weight) + '_' + \
+                str(my_training_arguments.training_arguments.bias_whole_image) + '/',
+                output_file_name= my_training_arguments.training_arguments.target
+
             )
             for i in range(int(my_training_arguments.training_arguments.repeat_times)):
                 lazy_train(my_training_arguments, output_manager)

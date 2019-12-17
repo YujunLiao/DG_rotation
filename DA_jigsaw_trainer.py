@@ -270,14 +270,14 @@ if __name__ == "__main__":
             output_manager = OutputManager(
                 output_file_path=\
                 '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' + \
-                "DA_jigsaw_" + \
-                DA_Jigsaw_training_argument.training_arguments.network + '_' + \
-                DA_Jigsaw_training_argument.training_arguments.target + '_' + \
+                "DA_jigsaw/" + \
+                DA_Jigsaw_training_argument.training_arguments.network + '/' + \
                 str(DA_Jigsaw_training_argument.training_arguments.unsupervised_task_weight) + '_' + \
                 str(DA_Jigsaw_training_argument.training_arguments.bias_whole_image) + '_' + \
                 str(DA_Jigsaw_training_argument.training_arguments.target_domain_unsupervised_task_loss_weight) + '_' + \
-                str(DA_Jigsaw_training_argument.training_arguments.entropy_loss_weight)
+                str(DA_Jigsaw_training_argument.training_arguments.entropy_loss_weight) + '/',
 
+                output_file_name= DA_Jigsaw_training_argument.training_arguments.target
             )
             for i in range(int(DA_Jigsaw_training_argument.training_arguments.repeat_times)):
                 lazy_train(DA_Jigsaw_training_argument, output_manager)
