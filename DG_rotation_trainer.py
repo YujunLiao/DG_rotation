@@ -20,7 +20,7 @@ from trainer_utils.optimizer.MyOptimizer import MyOptimizer
 from trainer_utils.scheduler.MyScheduler import MyScheduler
 from trainer_utils.output_manager.OutputManager import OutputManager
 from trainer_utils.lazy_man.LazyMan import LazyMan
-
+import socket
 
 class DGRotationTrainer:
     def __init__(self, my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device, output_manager):
@@ -187,10 +187,12 @@ class DGRotationTrainer:
         self.output_manager.write_to_output_file([
             '--------------------------------------------------------',
             str(strftime("%Y-%m-%d %H:%M:%S", localtime())),
-            self.training_arguments.target,
+            self.training_arguments.source,
+            "target domain:" + self.training_arguments.target,
             "jigweight:" + str(self.training_arguments.unsupervised_task_weight),
             "bias_hole_image:" + str(self.training_arguments.bias_whole_image),
             "only_classify the ordered image:" + str(self.training_arguments.classify_only_ordered_images_or_not),
+            "batch_size:" + str(self.training_arguments.batch_size) + " learning_rate:" + str(self.training_arguments.learning_rate),
             "Highest accuracy on validation set appears on epoch " + str(val_res.argmax().data),
             "Highest accuracy on test set appears on epoch " + str(test_res.argmax().data),
             str("Accuracy on test set when the accuracy on validation set is highest:%.3f" % test_res[idx_best]),
@@ -240,11 +242,11 @@ if __name__ == "__main__":
             output_manager = OutputManager(
                 output_file_path= \
                 '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' +\
-                "DG_rotation/" + \
+                socket.gethostname() + "/DG_rotation/" + \
                 my_training_arguments.training_arguments.network + '/' + \
                 str(my_training_arguments.training_arguments.unsupervised_task_weight) + '_' + \
                 str(my_training_arguments.training_arguments.bias_whole_image) + '/',
-                output_file_name= my_training_arguments.training_arguments.target
+                output_file_name=my_training_arguments.training_arguments.source[0]+'_'+ my_training_arguments.training_arguments.target
 
             )
             for i in range(int(my_training_arguments.training_arguments.repeat_times)):

@@ -3,22 +3,21 @@
 # art clipart product real_world 65 Office_Home
 # amazon dslr webcam 31 Office-31
 
-# DA train resnet18 rotation pacs:7
+# DA train resnet18 rotation Office_Home:65
 # s_rotation_weight bias_whole_image t_rotation_weight  entropy
 
 CUDA_VISIBLE_DEVICES=$1 \
 /home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 /home/giorgio/Files/pycharm_project/DG_rotation/DA_rotation_trainer.py \
---parameters_lists 0.8,0.4,0.7,0.1 0.8,0.4,0.7,0.2  \
---domains_list photo  sketch cartoon art_painting \
---target_domain_list photo sketch   \
---n_classes 7 \
---repeat_times 1 \
---network resnet50  --epochs 2 \
---limit_source 100 --limit_target 100 \
+--parameters_lists  0.7,0.4,0.8,0.1 \
+--domains_list art clipart product real_world \
+--target_domain_list product   \
+--n_classes 65 \
+--repeat_times 3 \
+--network resnet50  --epochs 30 \
 --classify_only_ordered_images_or_not True  --TTA False --nesterov False \
---batch_size 128   --image_size 222 \
---learning_rate 0.001 --val_size 0.1  \
+--batch_size 32   --image_size 222 \
+--learning_rate 0.00025 --val_size 0.1  \
 --train_all True --folder_name test  \
 --min_scale 0.8 --max_scale 1.0 --random_horiz_flip 0.5 --jitter 0.4 --tile_random_grayscale 0.1 \
 #--unsupervised_task_weight 0.8  --bias_whole_image 0.3 \
@@ -26,5 +25,6 @@ CUDA_VISIBLE_DEVICES=$1 \
 #--entropy_loss_weight 0.1 \
 #--source photo  sketch cartoon  --target   art_painting  \
 
-
+# 128 0.001
+# 40 8g
 

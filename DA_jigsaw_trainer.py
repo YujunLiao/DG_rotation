@@ -20,6 +20,7 @@ from trainer_utils.output_manager.OutputManager import OutputManager
 from trainer_utils.lazy_man.LazyMan import LazyMan
 import itertools
 import torch.nn.functional as func
+import socket
 
 
 class DAJigsawTrainer:
@@ -218,6 +219,7 @@ class DAJigsawTrainer:
             "target_rotation_weight:" + str(self.training_arguments.target_domain_unsupervised_task_loss_weight),
             "entropy_weight:" + str(self.training_arguments.entropy_loss_weight),
             "only_classify the ordered image:"+str(self.training_arguments.classify_only_ordered_images_or_not),
+            "batch_size:"+str(self.training_arguments.batch_size)+" learning_rate:"+str(self.training_arguments.learning_rate),
             "Highest accuracy on validation set appears on epoch "+ str(val_res.argmax().data),
             "Highest accuracy on test set appears on epoch "+ str(test_res.argmax().data),
             str("Accuracy on test set when the accuracy on validation set is highest:%.3f" % test_res[idx_best]),
@@ -271,14 +273,14 @@ if __name__ == "__main__":
             output_manager = OutputManager(
                 output_file_path=\
                 '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' + \
-                "DA_jigsaw/" + \
+                socket.gethostname() + "/DA_jigsaw/" + \
                 DA_Jigsaw_training_argument.training_arguments.network + '/' + \
                 str(DA_Jigsaw_training_argument.training_arguments.unsupervised_task_weight) + '_' + \
                 str(DA_Jigsaw_training_argument.training_arguments.bias_whole_image) + '_' + \
                 str(DA_Jigsaw_training_argument.training_arguments.target_domain_unsupervised_task_loss_weight) + '_' + \
                 str(DA_Jigsaw_training_argument.training_arguments.entropy_loss_weight) + '/',
 
-                output_file_name= DA_Jigsaw_training_argument.training_arguments.target
+                output_file_name=DA_Jigsaw_training_argument.training_arguments.source[0]+'_'+DA_Jigsaw_training_argument.training_arguments.target
             )
             for i in range(int(DA_Jigsaw_training_argument.training_arguments.repeat_times)):
                 lazy_train(DA_Jigsaw_training_argument, output_manager)
