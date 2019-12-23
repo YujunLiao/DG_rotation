@@ -17,7 +17,7 @@ from trainer_utils.data_loader.DAJigsawDataLoader import DAJigsawDataLoader
 from trainer_utils.optimizer.MyOptimizer import MyOptimizer
 from trainer_utils.scheduler.MyScheduler import MyScheduler
 from trainer_utils.output_manager.OutputManager import OutputManager
-from trainer_utils.lazy_man.LazyMan import LazyMan
+from trainer_utils.lazy_man.LazyMan import LazyMan, LazyMan2
 import itertools
 import torch.nn.functional as func
 import socket
@@ -261,7 +261,7 @@ if __name__ == "__main__":
         #     ['art_painting', 'cartoon', 'sketch', 'photo'],
         #     ['art_painting', 'cartoon', 'sketch', 'photo']
         # )
-        lazy_man = LazyMan(
+        lazy_man = LazyMan2(
             DA_Jigsaw_training_argument.training_arguments.domains_list,
             DA_Jigsaw_training_argument.training_arguments.target_domain_list
         )

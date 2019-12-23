@@ -9,9 +9,9 @@
 CUDA_VISIBLE_DEVICES=$1 \
 /home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 /home/giorgio/Files/pycharm_project/DG_rotation/DA_rotation_trainer.py \
---parameters_lists  0.7,0.4,0.8,0.1 \
---domains_list art clipart product real_world \
---target_domain_list product   \
+--parameters_lists  0.8,0.4,0.7,0.1 \
+--domains_list  amazon  webcam dslr \
+--target_domain_list  dslr webcam  amazon \
 --n_classes 65 \
 --repeat_times 3 \
 --network resnet50  --epochs 30 \
