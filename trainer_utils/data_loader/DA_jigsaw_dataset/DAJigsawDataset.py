@@ -8,14 +8,14 @@ from random import random
 import torch
 import bisect
 import warnings
-from trainer_utils.data_loader.dataset.MyDataset import MyDataset
+from trainer_utils.data_loader.dataset.PDataset import PDataset
 from torch.utils.data import Dataset
 from os.path import join, dirname
 
 
 class DAJigsawDataset():
     def __init__(self, my_training_arguments, is_patch_based_or_not):
-        my_dataset = MyDataset(my_training_arguments, is_patch_based_or_not)
+        my_dataset = PDataset(my_training_arguments, is_patch_based_or_not)
         training_arguments = my_training_arguments.training_arguments
         max_number_of_train_dataset = training_arguments.limit_source
         max_number_of_test_dataset = training_arguments.limit_target

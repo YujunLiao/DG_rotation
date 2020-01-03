@@ -8,7 +8,7 @@
 
 CUDA_VISIBLE_DEVICES=$1 \
 /home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
-/home/giorgio/Files/pycharm_project/DG_rotation/DA_rotation_trainer.py \
+/home/giorgio/Files/pycharm_project/DG_rotation/DA_jigsaw_trainer.py \
 --parameters_lists 0.7,0.9,0.7,0.1  \
 --domains_list photo  sketch cartoon art_painting \
 --target_domain_list photo  sketch cartoon    \
