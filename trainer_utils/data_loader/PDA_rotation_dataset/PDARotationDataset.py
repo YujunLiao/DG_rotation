@@ -8,13 +8,13 @@ from random import random
 import torch
 import bisect
 import warnings
-from trainer_utils.data_loader.dataset.Dataset import MyDataset
+from trainer_utils.data_loader.dataset.PDataset import PDataset
 from torch.utils.data import Dataset
 
 
-class DARotationDataset():
+class PDARotationDataset():
     def __init__(self, my_training_arguments, is_patch_based_or_not):
-        my_dataset = MyDataset(my_training_arguments, is_patch_based_or_not)
+        my_dataset = PDataset(my_training_arguments, is_patch_based_or_not)
         training_arguments = my_training_arguments.training_arguments
         max_number_of_train_dataset = training_arguments.limit_source
         max_number_of_test_dataset = training_arguments.limit_target
@@ -27,7 +27,8 @@ class DARotationDataset():
             is_patch_based_or_not=is_patch_based_or_not,
             img_transformer=img_transformer,
             tile_transformer=tile_transformer,
-            percent_of_original_image=training_arguments.bias_whole_image
+            # percent_of_original_image=training_arguments.bias_whole_image
+            percent_of_original_image=1
         )
 
         if max_number_of_train_dataset:
@@ -41,7 +42,8 @@ class DARotationDataset():
             is_patch_based_or_not=is_patch_based_or_not,
             img_transformer=img_transformer,
             tile_transformer=tile_transformer,
-            percent_of_original_image=training_arguments.bias_whole_image
+            # percent_of_original_image=training_arguments.bias_whole_image
+            percent_of_original_image=0
         )
 
         if max_number_of_train_dataset:
