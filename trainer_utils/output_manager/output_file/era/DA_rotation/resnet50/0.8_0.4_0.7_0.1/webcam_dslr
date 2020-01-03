@@ -1,0 +1,15 @@
+--------------------------------------------------------
+2020-01-03 18:52:50
+webcam 
+target domain:dslr
+jigweight:0.8
+bias_hole_image:0.4
+target_rotation_weight:0.7
+entropy_weight:0.1
+only_classify the ordered image:True
+batch_size:32 learning_rate:0.0005
+Highest accuracy on validation set appears on epoch tensor(27)
+Highest accuracy on test set appears on epoch tensor(29)
+Accuracy on test set when the accuracy on validation set is highest:0.987
+Highest accuracy on test set:0.994
+It took 499.873

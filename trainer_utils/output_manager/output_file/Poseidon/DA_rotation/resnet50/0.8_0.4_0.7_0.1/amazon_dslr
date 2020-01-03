@@ -1,0 +1,30 @@
+--------------------------------------------------------
+2020-01-03 18:57:16
+amazon 
+target domain:dslr
+jigweight:0.8
+bias_hole_image:0.4
+target_rotation_weight:0.7
+entropy_weight:0.1
+only_classify the ordered image:True
+batch_size:32 learning_rate:0.0005
+Highest accuracy on validation set appears on epoch tensor(27)
+Highest accuracy on test set appears on epoch tensor(28)
+Accuracy on test set when the accuracy on validation set is highest:0.857
+Highest accuracy on test set:0.857
+It took 1335.86
+--------------------------------------------------------
+2020-01-03 19:05:56
+amazon 
+target domain:dslr
+jigweight:0.8
+bias_hole_image:0.4
+target_rotation_weight:0.7
+entropy_weight:0.1
+only_classify the ordered image:True
+batch_size:32 learning_rate:0.0005
+Highest accuracy on validation set appears on epoch tensor(29)
+Highest accuracy on test set appears on epoch tensor(26)
+Accuracy on test set when the accuracy on validation set is highest:0.827
+Highest accuracy on test set:0.835
+It took 1643.24

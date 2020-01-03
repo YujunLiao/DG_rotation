@@ -1,4 +1,5 @@
 trainer_utils/model/pretrained/parameters/*
+trainer_utils/output_manager/output_file/*
 *.ipynb
 */__pycache__/*
 .idea/*
