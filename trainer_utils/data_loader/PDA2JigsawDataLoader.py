@@ -6,10 +6,10 @@ from torch.utils.data import DataLoader
 # from trainer_utils.data_loader.helper.JigsawLoader import JigsawDataset, JigsawTestDataset, get_split_dataset_info, _dataset_info
 # from trainer_utils.data_loader.helper.concat_dataset import ConcatDataset
 # from random import sample, random
-from trainer_utils.data_loader.PDA_rotation_dataset.PDARotationDataset import PDARotationDataset
+from trainer_utils.data_loader.PDA2_jigsaw_dataset.PDAJigsawDataset import PDAJigsawDataset
 
 
-class PDARotationDataLoader:
+class PDAJigsawDataLoader:
     """Return train, validation, test data loaders.
 
     Implementation:
@@ -47,11 +47,11 @@ class PDARotationDataLoader:
         # validation_dataset = my_dataset.validation_dataset
         # test_dataset = my_dataset.test_dataset
 
-        PDA_rotation_dataset = PDARotationDataset(my_training_arguments, is_patch_based_or_not)
-        source_domain_train_dataset=PDA_rotation_dataset.source_domain_train_dataset
-        target_domain_train_dataset=PDA_rotation_dataset.target_domain_train_dataset
-        validation_dataset=PDA_rotation_dataset.validation_dataset
-        test_dataset=PDA_rotation_dataset.test_dataset
+        PDA_jigsaw_dataset = PDAJigsawDataset(my_training_arguments, is_patch_based_or_not)
+        source_domain_train_dataset=PDA_jigsaw_dataset.source_domain_train_dataset
+        target_domain_train_dataset=PDA_jigsaw_dataset.target_domain_train_dataset
+        validation_dataset=PDA_jigsaw_dataset.validation_dataset
+        test_dataset=PDA_jigsaw_dataset.test_dataset
 
         # dataset =
         # val_dataset = ConcatDataset(validation_dataset_list)

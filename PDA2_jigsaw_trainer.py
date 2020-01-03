@@ -12,17 +12,18 @@ from time import time, strftime, localtime
 from trainer_utils.model.MyModel import MyModel
 
 from trainer_utils.logger.Logger import Logger
-from trainer_utils.training_argument.DARotationTrainingArgument import DARotationTrainingArgument
-from trainer_utils.data_loader.PDARotationDataLoader import PDARotationDataLoader
+from trainer_utils.training_argument.DAjigsawTrainingArgument import DAJigsawTrainingArgument
+from trainer_utils.data_loader.PDA2JigsawDataLoader import PDAJigsawDataLoader
 from trainer_utils.optimizer.MyOptimizer import MyOptimizer
 from trainer_utils.scheduler.MyScheduler import MyScheduler
 from trainer_utils.output_manager.OutputManager import OutputManager
-from trainer_utils.lazy_man.LazyMan import LazyMan
+from trainer_utils.lazy_man.LazyMan import LazyMan, LazyMan2
 import itertools
 import torch.nn.functional as func
 import socket
 
-class DARotationTrainer:
+
+class PDAJigsawTrainer:
     def __init__(self, my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device, output_manager):
         self.training_arguments = my_training_arguments.training_arguments
         self.device = device
@@ -67,7 +68,7 @@ class DARotationTrainer:
             self.optimizer.zero_grad()
 
             rotation_predict_label, class_predict_label = self.model(data)  # , lambda_val=lambda_val)
-            unsupervised_task_loss = criterion(rotation_predict_label, rotation_label)
+            # unsupervised_task_loss = criterion(rotation_predict_label, rotation_label)
 
             target_domain_rotation_predict_label, target_domain_class_predict_label = self.model(target_domain_data)  # , lambda_val=lambda_val)
             target_domain_unsupervised_task_loss = criterion(target_domain_rotation_predict_label, target_domain_rotation_label)
@@ -91,7 +92,7 @@ class DARotationTrainer:
             _, cls_pred = class_predict_label.max(dim=1)
             _, jig_pred = rotation_predict_label.max(dim=1)
             # _, domain_pred = domain_logit.max(dim=1)
-            loss = supervised_task_loss + unsupervised_task_loss * self.training_arguments.unsupervised_task_weight\
+            loss = supervised_task_loss \
             + target_domain_unsupervised_task_loss * self.training_arguments.target_domain_unsupervised_task_loss_weight\
             + target_domain_entropy_loss * self.training_arguments.entropy_loss_weight
 
@@ -102,7 +103,7 @@ class DARotationTrainer:
                 i,
                 len(self.source_domain_train_data_loader),
                 {
-                    "jigsaw": unsupervised_task_loss.item(),
+                    # "jigsaw": unsupervised_task_loss.item(),
                     "class": supervised_task_loss.item(),
                     "t_rotation": target_domain_unsupervised_task_loss.item(),
                     "entropy": target_domain_entropy_loss.item()
@@ -113,9 +114,9 @@ class DARotationTrainer:
                  },
                 data.shape[0]
             )
-            del loss, supervised_task_loss, unsupervised_task_loss, rotation_predict_label, class_predict_label
+            del loss, supervised_task_loss, rotation_predict_label, class_predict_label
             del target_domain_rotation_predict_label, target_domain_class_predict_label
-            del  target_domain_unsupervised_task_loss, target_domain_entropy_loss
+            del target_domain_unsupervised_task_loss, target_domain_entropy_loss
 
         self.model.eval()
         with torch.no_grad():
@@ -218,7 +219,7 @@ class DARotationTrainer:
             "target_rotation_weight:" + str(self.training_arguments.target_domain_unsupervised_task_loss_weight),
             "entropy_weight:" + str(self.training_arguments.entropy_loss_weight),
             "only_classify the ordered image:"+str(self.training_arguments.classify_only_ordered_images_or_not),
-            "batch_size:" + str(self.training_arguments.batch_size) + " learning_rate:" + str(self.training_arguments.learning_rate),
+            "batch_size:"+str(self.training_arguments.batch_size)+" learning_rate:"+str(self.training_arguments.learning_rate),
             "Highest accuracy on validation set appears on epoch "+ str(val_res.argmax().data),
             "Highest accuracy on test set appears on epoch "+ str(test_res.argmax().data),
             str("Accuracy on test set when the accuracy on validation set is highest:%.3f" % test_res[idx_best]),
@@ -231,11 +232,11 @@ class DARotationTrainer:
 def lazy_train(my_training_arguments, output_manager):
     my_model = MyModel(my_training_arguments)
     is_patch_based_or_not = my_model.model.is_patch_based()
-    my_data_loader = PDARotationDataLoader(my_training_arguments, is_patch_based_or_not)
+    my_data_loader = PDAJigsawDataLoader(my_training_arguments, is_patch_based_or_not)
     my_optimizer = MyOptimizer(my_training_arguments, my_model)
     my_scheduler = MyScheduler(my_training_arguments, my_optimizer)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    trainer = DARotationTrainer(my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device, output_manager)
+    trainer = PDAJigsawTrainer(my_training_arguments, my_model, my_data_loader, my_optimizer, my_scheduler, device, output_manager)
     trainer.do_training()
 
 
@@ -243,17 +244,17 @@ if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True
 
 
-    DA_rotation_training_argument = DARotationTrainingArgument()
+    DA_Jigsaw_training_argument = DAJigsawTrainingArgument()
     # my_training_arguments.training_arguments.classify_only_ordered_images_or_not=True
-    DA_rotation_training_argument.training_arguments.TTA = False
-    DA_rotation_training_argument.training_arguments.nesterov = False
+    DA_Jigsaw_training_argument.training_arguments.TTA = False
+    DA_Jigsaw_training_argument.training_arguments.nesterov = False
 
-    for parameter_pair in DA_rotation_training_argument.training_arguments.parameters_lists:
+    for parameter_pair in DA_Jigsaw_training_argument.training_arguments.parameters_lists:
 
-        DA_rotation_training_argument.training_arguments.unsupervised_task_weight=parameter_pair[0]
-        DA_rotation_training_argument.training_arguments.bias_whole_image=parameter_pair[1]
-        DA_rotation_training_argument.training_arguments.target_domain_unsupervised_task_loss_weight=parameter_pair[2]
-        DA_rotation_training_argument.training_arguments.entropy_loss_weight=parameter_pair[3]
+        DA_Jigsaw_training_argument.training_arguments.unsupervised_task_weight=parameter_pair[0]
+        DA_Jigsaw_training_argument.training_arguments.bias_whole_image=parameter_pair[1]
+        DA_Jigsaw_training_argument.training_arguments.target_domain_unsupervised_task_loss_weight=parameter_pair[2]
+        DA_Jigsaw_training_argument.training_arguments.entropy_loss_weight=parameter_pair[3]
 
             # lazy_man = LazyMan(['CALTECH', 'LABELME', 'PASCAL', 'SUN'])
         # lazy_man = LazyMan(
@@ -261,29 +262,28 @@ if __name__ == "__main__":
         #     ['art_painting', 'cartoon', 'sketch', 'photo']
         # )
         lazy_man = LazyMan(
-            DA_rotation_training_argument.training_arguments.domains_list,
-            DA_rotation_training_argument.training_arguments.target_domain_list
+            DA_Jigsaw_training_argument.training_arguments.domains_list,
+            DA_Jigsaw_training_argument.training_arguments.target_domain_list
         )
 
         for source_and_target_domain in lazy_man.source_and_target_domain_permutation_list:
-            DA_rotation_training_argument.training_arguments.source=source_and_target_domain['source_domain']
-            DA_rotation_training_argument.training_arguments.target=source_and_target_domain['target_domain']
+            DA_Jigsaw_training_argument.training_arguments.source=source_and_target_domain['source_domain']
+            DA_Jigsaw_training_argument.training_arguments.target=source_and_target_domain['target_domain']
 
             output_manager = OutputManager(
                 output_file_path=\
                 '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' + \
-                socket.gethostname() + "/DA_rotation/" + \
-                DA_rotation_training_argument.training_arguments.network + '/'+ \
-                str(DA_rotation_training_argument.training_arguments.unsupervised_task_weight) + '_' + \
-                str(DA_rotation_training_argument.training_arguments.bias_whole_image) + '_' + \
-                str(DA_rotation_training_argument.training_arguments.target_domain_unsupervised_task_loss_weight) + '_' + \
-                str(DA_rotation_training_argument.training_arguments.entropy_loss_weight) + '/',
-                output_file_name=DA_rotation_training_argument.training_arguments.source[0]+'_'+ DA_rotation_training_argument.training_arguments.target
+                socket.gethostname() + "/PDA2_jigsaw/" + \
+                DA_Jigsaw_training_argument.training_arguments.network + '/' + \
+                str(DA_Jigsaw_training_argument.training_arguments.unsupervised_task_weight) + '_' + \
+                str(DA_Jigsaw_training_argument.training_arguments.bias_whole_image) + '_' + \
+                str(DA_Jigsaw_training_argument.training_arguments.target_domain_unsupervised_task_loss_weight) + '_' + \
+                str(DA_Jigsaw_training_argument.training_arguments.entropy_loss_weight) + '/',
 
-
+                output_file_name=DA_Jigsaw_training_argument.training_arguments.source[0]+'_'+DA_Jigsaw_training_argument.training_arguments.target
             )
-            for i in range(int(DA_rotation_training_argument.training_arguments.repeat_times)):
-                lazy_train(DA_rotation_training_argument, output_manager)
+            for i in range(int(DA_Jigsaw_training_argument.training_arguments.repeat_times)):
+                lazy_train(DA_Jigsaw_training_argument, output_manager)
 
 
 

@@ -1,7 +1,7 @@
 import numpy as np
 #import torch
 import torch.utils.data as data
-import torchvision
+# import torchvision
 import torchvision.transforms as transforms
 from PIL import Image
 from random import random
@@ -10,10 +10,9 @@ import bisect
 import warnings
 from trainer_utils.data_loader.dataset.PDataset import PDataset
 from torch.utils.data import Dataset
-from os.path import join, dirname
 
 
-class PDAJigsawDataset():
+class PDARotationDataset():
     def __init__(self, my_training_arguments, is_patch_based_or_not):
         my_dataset = PDataset(my_training_arguments, is_patch_based_or_not)
         training_arguments = my_training_arguments.training_arguments
@@ -22,14 +21,14 @@ class PDAJigsawDataset():
         img_transformer, tile_transformer = self._get_train_transformers(training_arguments)
         val_transformer = self._get_val_transformer(training_arguments)
 
-        source_domain_train_dataset = JigsawTrainDataset(
+        source_domain_train_dataset = RotationTrainDataset(
             my_dataset.train_dataset['train_data_paths'],
             my_dataset.train_dataset['train_labels'],
-            number_of_unsupervised_classes=my_training_arguments.training_arguments.number_of_unsupervised_classes,
             is_patch_based_or_not=is_patch_based_or_not,
             img_transformer=img_transformer,
             tile_transformer=tile_transformer,
-            percent_of_original_image=training_arguments.bias_whole_image
+            # percent_of_original_image=training_arguments.bias_whole_image
+            percent_of_original_image=1
         )
 
         if max_number_of_train_dataset:
@@ -37,14 +36,14 @@ class PDAJigsawDataset():
 
         self.source_domain_train_dataset = ConcatDataset([source_domain_train_dataset])
 
-        target_domain_train_dataset = JigsawTrainDataset(
+        target_domain_train_dataset = RotationTrainDataset(
             my_dataset.test_dataset['test_data_paths'],
             my_dataset.test_dataset['test_labels'],
-            number_of_unsupervised_classes=my_training_arguments.training_arguments.number_of_unsupervised_classes,
             is_patch_based_or_not=is_patch_based_or_not,
             img_transformer=img_transformer,
             tile_transformer=tile_transformer,
-            percent_of_original_image=training_arguments.bias_whole_image
+            # percent_of_original_image=training_arguments.bias_whole_image
+            percent_of_original_image=0
         )
 
         if max_number_of_train_dataset:
@@ -53,10 +52,9 @@ class PDAJigsawDataset():
         self.target_domain_train_dataset = ConcatDataset([target_domain_train_dataset])
 
 
-        validation_dataset = JigsawTestDataset(
+        validation_dataset = RotationTestDataset(
             my_dataset.validation_dataset['validation_data_paths'],
             my_dataset.validation_dataset['validation_labels'],
-            number_of_unsupervised_classes=my_training_arguments.training_arguments.number_of_unsupervised_classes,
             img_transformer=val_transformer,
             is_patch_based_or_not=is_patch_based_or_not,
 
@@ -66,10 +64,9 @@ class PDAJigsawDataset():
 
 
 
-        test_dataset = JigsawTestDataset(
+        test_dataset = RotationTestDataset(
             my_dataset.test_dataset['test_data_paths'],
             my_dataset.test_dataset['test_labels'],
-            number_of_unsupervised_classes=my_training_arguments.training_arguments.number_of_unsupervised_classes,
             is_patch_based_or_not=is_patch_based_or_not,
             img_transformer=val_transformer,
             )
@@ -104,23 +101,15 @@ class PDAJigsawDataset():
         return transforms.Compose(img_tr)
 
 
-class JigsawTrainDataset(data.Dataset):
-    def __init__(self, data_paths, labels, number_of_unsupervised_classes, img_transformer=None, tile_transformer=None, is_patch_based_or_not=False, percent_of_original_image=None):
-        """
-        number_of_unsupervised_classes means the total number of unsupervised classes.
-        For example, number_of_unsupervised_classes for rotation classes is 4
-        If there are 30 shuffled jigsaw classes and 1 original one, number_of_unsupervised_classes is 31
+class RotationTrainDataset(data.Dataset):
+    def __init__(self, data_paths, labels, img_transformer=None, tile_transformer=None, is_patch_based_or_not=False, percent_of_original_image=None):
 
-        """
-
-        self.number_of_unsupervised_classes = number_of_unsupervised_classes
         self._data_path = ""
         self._data_paths = data_paths
         self._labels = labels
         # the shape of self.permutations is 30*9
-        # the file of permutation stores the shuffled patch sequence of image, so here we need to minus 1.
-        self.permutations = self.__retrieve_permutations(number_of_unsupervised_classes-1)
-        self.grid_size = 3
+        # self.permutations = self.__retrieve_permutations(jig_classes)
+        # self.grid_size = 3
         self._bias_whole_image = percent_of_original_image
         if is_patch_based_or_not:
             self.patch_size = 64
@@ -128,44 +117,32 @@ class JigsawTrainDataset(data.Dataset):
         self._augment_tile = tile_transformer
         if is_patch_based_or_not:
             self.returnFunc = lambda x: x
-        else:
-
-            def make_grid(x):
-                """
-
-                :param x:
-                :return:
-                """
-                return torchvision.utils.make_grid(x, self.grid_size, padding=0)
-            self.returnFunc = make_grid
+        # else:
+        #
+        #     def make_grid(x):
+        #         """
+        #
+        #         :param x:
+        #         :return:
+        #         """
+        #         return torchvision.logger.make_grid(x, self.grid_size, padding=0)
+        #     self.returnFunc = make_grid
         #
 
-
-    def __retrieve_permutations(self, file_number):
-        path = join(dirname(__file__),'permutations_%d.npy' % (file_number))
-        # all_perm = np.load(path+'permutations_%d.npy' % (file_number))
-        all_perm = np.load(path)
-        # from range [1,9] to [0,8]
-        if all_perm.min() == 1:
-            all_perm = all_perm - 1
-
-        return all_perm
-
-
-    def get_tile(self, img, n):
-        """Return the augmentation tile of picture
-
-        :param img:
-        :param n:
-        :return:
-        """
-
-        w = float(img.size[0]) / self.grid_size
-        y = int(n / self.grid_size)
-        x = n % self.grid_size
-        tile = img.crop([x * w, y * w, (x + 1) * w, (y + 1) * w])
-        tile = self._augment_tile(tile)
-        return tile
+    # def get_tile(self, img, n):
+    #     """Return the augmentation tile of picture
+    #
+    #     :param img:
+    #     :param n:
+    #     :return:
+    #     """
+    #
+    #     w = float(img.size[0]) / self.grid_size
+    #     y = int(n / self.grid_size)
+    #     x = n % self.grid_size
+    #     tile = img.crop([x * w, y * w, (x + 1) * w, (y + 1) * w])
+    #     tile = self._augment_tile(tile)
+    #     return tile
 
     def _get_image_of_index(self, index):
         framename = self._data_path + '/' + self._data_paths[index]
@@ -180,31 +157,30 @@ class JigsawTrainDataset(data.Dataset):
         :return:
         """
         img = self._get_image_of_index(index)
-        n_grids = self.grid_size ** 2
-        tiles = [None] * n_grids
-        for n in range(n_grids):
-            tiles[n] = self.get_tile(img, n)
+        # n_grids = self.grid_size ** 2
+        # tiles = [None] * n_grids
+        # for n in range(n_grids):
+        #     tiles[n] = self.get_tile(img, n)
 
-        order = np.random.randint(self.number_of_unsupervised_classes)  # added 1 for class 0: unsorted
-        # order = np.random.randint(4)
+        # order = np.random.randint(len(self.permutations) + 1)  # added 1 for class 0: unsorted
+        order = np.random.randint(4)
 
         if self._bias_whole_image:
             if self._bias_whole_image > random():
                 order = 0
         if order == 0:
-            data = tiles
-            # data = self._augment_tile(img)
+            # data = tiles
+            data = self._augment_tile(img)
         else:
-            data = [tiles[self.permutations[order - 1][t]] for t in range(n_grids)]
-
-            # data = self._augment_tile(img.transpose(order + 1))
+            # data = [tiles[self.permutations[order - 1][t]] for t in range(n_grids)]
+            data = self._augment_tile(img.transpose(order + 1))
             #
 
             # TODO(lyj):transform the data according to the order
 
-        data = torch.stack(data, 0)
-        return self.returnFunc(data), int(order), int(self._labels[index])
-        # return data, int(order), int(self._labels[index])
+        # data = torch.stack(data, 0)
+        # return self.returnFunc(data), int(order), int(self.labels[index])
+        return data, int(order), int(self._labels[index])
 
     def __len__(self):
         return len(self._data_paths)
@@ -218,19 +194,19 @@ class JigsawTrainDataset(data.Dataset):
     #     return all_perm
 
 
-class JigsawTestDataset(JigsawTrainDataset):
+class RotationTestDataset(RotationTrainDataset):
     def __init__(self, *args, **xargs):
         super().__init__(*args, **xargs)
 
     def __getitem__(self, index):
         # framename = self.data_path + '/' + self.data_paths[index]
         # img = Image.open(framename).convert('RGB')
-        img = super(JigsawTestDataset, self)._get_image_of_index(index)
+        img = super(RotationTestDataset, self)._get_image_of_index(index)
         # return self._image_transformer(img), 0, int(self.labels[index])
         return img, 0, int(self._labels[index])
 
 
-class JigsawTestDatasetMultiple(JigsawTrainDataset):
+class RotationTestDatasetMultiple(RotationTrainDataset):
     def __init__(self, *args, **xargs):
         super().__init__(*args, **xargs)
         self._image_transformer = transforms.Compose([
@@ -310,7 +286,7 @@ class ConcatDataset(Dataset):
         return r
 
     def isMulti(self):
-        return isinstance(self.datasets[0], JigsawTestDatasetMultiple)
+        return isinstance(self.datasets[0], RotationTestDatasetMultiple)
 
     def __init__(self, datasets):
         super(ConcatDataset, self).__init__()

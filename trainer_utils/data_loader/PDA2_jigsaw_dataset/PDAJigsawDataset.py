@@ -29,7 +29,8 @@ class PDAJigsawDataset():
             is_patch_based_or_not=is_patch_based_or_not,
             img_transformer=img_transformer,
             tile_transformer=tile_transformer,
-            percent_of_original_image=training_arguments.bias_whole_image
+            # percent_of_original_image=training_arguments.bias_whole_image
+            percent_of_original_image=1
         )
 
         if max_number_of_train_dataset:
@@ -44,7 +45,8 @@ class PDAJigsawDataset():
             is_patch_based_or_not=is_patch_based_or_not,
             img_transformer=img_transformer,
             tile_transformer=tile_transformer,
-            percent_of_original_image=training_arguments.bias_whole_image
+            # percent_of_original_image=training_arguments.bias_whole_image
+            percent_of_original_image=0
         )
 
         if max_number_of_train_dataset:
