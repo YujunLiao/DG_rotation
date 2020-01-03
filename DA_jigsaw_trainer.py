@@ -261,7 +261,7 @@ if __name__ == "__main__":
         #     ['art_painting', 'cartoon', 'sketch', 'photo'],
         #     ['art_painting', 'cartoon', 'sketch', 'photo']
         # )
-        lazy_man = LazyMan2(
+        lazy_man = LazyMan(
             DA_Jigsaw_training_argument.training_arguments.domains_list,
             DA_Jigsaw_training_argument.training_arguments.target_domain_list
         )
