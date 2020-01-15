@@ -5,15 +5,16 @@
 
 # DA train resnet18 rotation Office_Home:65
 # s_rotation_weight bias_whole_image t_rotation_weight  entropy
+# 0,0.9,0.7,0.1 0,0.9,0.7,0.1
 
 CUDA_VISIBLE_DEVICES=$1 \
 /home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 /home/giorgio/Files/pycharm_project/DG_rotation/DA_rotation_trainer.py \
---parameters_lists  0,1,0,0 \
---domains_list real_world  \
---target_domain_list  product \
---n_classes 65 \
---repeat_times 1 \
+--parameters_lists  0,0.4,0.7,0.1 0,0.4,0.8,0.1 0.7,0.4,0.7,0.1 0.8,0.4,0.8,0.1   \
+--domains_list amazon dslr webcam  \
+--target_domain_list amazon dslr webcam   \
+--n_classes 31 \
+--repeat_times 3 \
 --network resnet50  --epochs 30 \
 --classify_only_ordered_images_or_not True  --TTA False --nesterov False \
 --batch_size 32   --image_size 222 \

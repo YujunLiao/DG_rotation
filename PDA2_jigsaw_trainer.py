@@ -191,7 +191,9 @@ class PDAJigsawTrainer:
             self._do_epoch()
         val_res = self.results["val"]
         test_res = self.results["test"]
-        idx_best = val_res.argmax()
+        # idx_best = val_res.argmax()
+        idx_best = self._smooth(val_res.tolist(), 0.6)[1]-1
+
 
         # print("Best val %g, corresponding test %g - best test: %g" % (val_res.max(), test_res[idx_best], test_res.max()))
         print(strftime("%Y-%m-%d %H:%M:%S", localtime()))
@@ -228,6 +230,23 @@ class PDAJigsawTrainer:
         ])
 
         return self.logger, self.model
+
+    def _smooth(self, scalars, weight):  # Weight between 0 and 1
+        last = scalars[0]  # First value in the plot (first timestep)
+        smoothed = list()
+        for point in scalars:
+            smoothed_val = last * weight + (1 - weight) * point  # Calculate smoothed value
+            smoothed.append(float(smoothed_val))  # Save it
+            last = smoothed_val  # Anchor the last smoothed value
+
+        smoothed_array = []
+        for i in smoothed:
+            smoothed_array.append(i)
+
+        massimo = max(smoothed_array)
+        epoch = smoothed_array.index(massimo)
+        epoch = epoch + 1
+        return smoothed_array, epoch
 
 def lazy_train(my_training_arguments, output_manager):
     my_model = MyModel(my_training_arguments)

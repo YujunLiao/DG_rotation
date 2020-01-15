@@ -5,15 +5,16 @@
 
 # DA train resnet18 rotation pacs:7
 # s_rotation_weight bias_whole_image t_rotation_weight  entropy
-
+# 0.8,0.3,0.7,0.1 0.8,0.5,0.7,0.1 0.8,0.4,0.6,0.1 0.8,0.4,0.8,0.1
+# 0.8,0.4,0.7,0.2 0.8,0.4,0.7,0.1 0.7,0.4,0.7,0.1  0.9,0.4,0.7,0.1
 CUDA_VISIBLE_DEVICES=$1 \
 /home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 /home/giorgio/Files/pycharm_project/DG_rotation/PDA_rotation_trainer.py \
---parameters_lists 0.9,0.4,0.7,0.1 \
---domains_list     amazon dslr webcam \
---target_domain_list      amazon dslr webcam  \
+--parameters_lists  0.8,0.3,0.7,0.1   \
+--domains_list      art clipart product real_world  \
+--target_domain_list      product real_world   \
 --n_classes 65 \
---repeat_times 3 \
+--repeat_times 1 \
 --network resnet50  --epochs 30 \
 --classify_only_ordered_images_or_not True  --TTA False --nesterov False \
 --batch_size 32   --image_size 222 \

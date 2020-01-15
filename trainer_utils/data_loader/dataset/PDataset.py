@@ -79,7 +79,7 @@ class PDataset:
 
             # path_of_txt_list_of_data refer to where are the txt files that record all images' path, for example,
             # /home/lyj/Files/project/pycharm/DG_rotation/trainer_utils/data_loader/txt_lists/photo_train.txt
-            path_of_txt_list = join(dirname(__file__), 'txt_files_PADA', '%s31_train.txt' % domain_name)
+            path_of_txt_list = join(dirname(__file__), 'txt_files_PADA', '%s65_train.txt' % domain_name)
             data_paths, labels = self._get_data_paths_and_labels_from_txt_list(path_of_txt_list)
             # training_arguments.val_size refer to the percent of validation dataset, for example,
             # val_size=0.1 means 10% data is used for validation, 90% data is used for training.
@@ -152,7 +152,7 @@ class PDataset:
 
         # path_of_txt_list_of_data refer to where are the txt files that record all images' path, for example,
         # /home/lyj/Files/project/pycharm/DG_rotation/trainer_utils/data_loader/txt_lists/photo_train.txt
-        path_of_txt_list = join(dirname(__file__), 'txt_files_PADA', '%s10_test.txt' % training_arguments.target)
+        path_of_txt_list = join(dirname(__file__), 'txt_files_PADA', '%s25_test.txt' % training_arguments.target)
         data_paths, labels = self._get_data_paths_and_labels_from_txt_list(path_of_txt_list)
 
         # img_tr = get_val_transformer(training_arguments)
