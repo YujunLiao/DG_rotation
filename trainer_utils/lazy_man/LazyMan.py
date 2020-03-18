@@ -6,6 +6,8 @@ class LazyMan2:
     Input, domain_list, target_domain_list,
     for each target domain in target_domain_list,
     source domains are domain_list - target domain
+
+    Multi source domain to single target domain
     """
 
     def __init__(self, domain_list, target_domain_list):
@@ -35,6 +37,8 @@ class LazyMan:
     Input, domain_list, target_domain_list,
     for each target domain in target_domain_list,
     source domain can be any domain in domain_list - target domain
+
+    Single source domain to single target domain
     """
 
     def __init__(self, domain_list, target_domain_list):

@@ -17,7 +17,7 @@ from trainer_utils.data_loader.DARotationDataLoader import DARotationDataLoader
 from trainer_utils.optimizer.MyOptimizer import MyOptimizer
 from trainer_utils.scheduler.MyScheduler import MyScheduler
 from trainer_utils.output_manager.OutputManager import OutputManager
-from trainer_utils.lazy_man.LazyMan import LazyMan
+from trainer_utils.lazy_man.LazyMan import LazyMan, LazyMan2
 import itertools
 import torch.nn.functional as func
 import socket
