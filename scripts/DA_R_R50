@@ -10,10 +10,11 @@
 CUDA_VISIBLE_DEVICES=$1 \
 /home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 /home/giorgio/Files/pycharm_project/DG_rotation/DA_rotation_trainer.py \
---parameters_lists   0,0.4,0.7,0.1    \
---domains_list   art clipart product real_world  \
---target_domain_list  art clipart product real_world   \
---n_classes 65 \
+--redirect_to_file 1 \
+--parameters_lists   0.9,0.4,0.9,0.1    \
+--domains_list   amazon dslr webcam   \
+--target_domain_list   amazon dslr webcam   \
+--n_classes 31 \
 --repeat_times 3 \
 --network resnet50  --epochs 30 \
 --classify_only_ordered_images_or_not True  --TTA False --nesterov False \

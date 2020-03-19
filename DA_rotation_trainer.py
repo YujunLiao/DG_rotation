@@ -3,6 +3,8 @@
 # Name of method in a class should contain an obvious verbal, like get_something().
 # set attribute within __init__(self) function.
 # 每天学一点，每天改一点
+import os
+import sys
 
 import torch
 from torch import nn
@@ -260,24 +262,35 @@ if __name__ == "__main__":
         #     ['art_painting', 'cartoon', 'sketch', 'photo'],
         #     ['art_painting', 'cartoon', 'sketch', 'photo']
         # )
-        lazy_man = LazyMan(
+
+
+        lazy_man = LazyMan2(
             DA_rotation_training_argument.training_arguments.domains_list,
             DA_rotation_training_argument.training_arguments.target_domain_list
         )
+
+        output_file_path = \
+            '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' + \
+            socket.gethostname() + "/DA_rotation/" + \
+            DA_rotation_training_argument.training_arguments.network + '/' + \
+            str(DA_rotation_training_argument.training_arguments.unsupervised_task_weight) + '_' + \
+            str(DA_rotation_training_argument.training_arguments.bias_whole_image) + '_' + \
+            str(DA_rotation_training_argument.training_arguments.target_domain_unsupervised_task_loss_weight) + '_' + \
+            str(DA_rotation_training_argument.training_arguments.entropy_loss_weight) + '/'
+
+        if DA_rotation_training_argument.training_arguments.redirect_to_file == 1:
+            if not os.path.exists(output_file_path):
+                os.makedirs(output_file_path)
+            orig_stdout = sys.stdout
+            f = open( output_file_path + 'original_record', 'w')
+            sys.stdout = f
 
         for source_and_target_domain in lazy_man.source_and_target_domain_permutation_list:
             DA_rotation_training_argument.training_arguments.source=source_and_target_domain['source_domain']
             DA_rotation_training_argument.training_arguments.target=source_and_target_domain['target_domain']
 
             output_manager = OutputManager(
-                output_file_path=\
-                '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' + \
-                socket.gethostname() + "/DA_rotation/" + \
-                DA_rotation_training_argument.training_arguments.network + '/'+ \
-                str(DA_rotation_training_argument.training_arguments.unsupervised_task_weight) + '_' + \
-                str(DA_rotation_training_argument.training_arguments.bias_whole_image) + '_' + \
-                str(DA_rotation_training_argument.training_arguments.target_domain_unsupervised_task_loss_weight) + '_' + \
-                str(DA_rotation_training_argument.training_arguments.entropy_loss_weight) + '/',
+                output_file_path=output_file_path,
                 output_file_name=DA_rotation_training_argument.training_arguments.source[0]+'_'+ DA_rotation_training_argument.training_arguments.target
 
 

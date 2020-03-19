@@ -86,5 +86,6 @@ class DARotationTrainingArgument(argparse.ArgumentParser):
         self.add_argument("--parameters_lists", type=parameters_lists, nargs='+')
         # self.add_argument("--parameters_lists", type=tuple, nargs='+')
         self.add_argument("--repeat_times", type=int)
+        self.add_argument("--redirect_to_file", default=0, type=int)
 
 

@@ -9,13 +9,14 @@ wb = Workbook()
 ws = wb.active
 
 # path = "/home/lyj//Files/project/pycharm/DG_rotation/trainer_utils/output_manager/output_file/"
-file_name = 'DA_rotation/resnet18/0.8_0.4_0.1_0.1/'
+file_name = 'DA_rotation/resnet50/0.8_0.4_0.8_0.1/'
 path = "/home/lyj/Files/project/pycharm/DG_rotation/trainer_utils/output_manager/output_file/era/"+ file_name
 
 files= os.listdir(path)
 files.sort()
 # print(files)
 column=0
+# files = ['cartoon_art_painting','art_painting_cartoon',  'art_painting_sketch', 'art_painting_photo', ]
 for file in files: #遍历文件夹
     file_words = file.split('_')
     domain_info = file_words[0][0] + file_words[1][0]
