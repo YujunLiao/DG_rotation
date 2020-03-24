@@ -264,7 +264,7 @@ if __name__ == "__main__":
         # )
 
 
-        lazy_man = LazyMan2(
+        lazy_man = LazyMan(
             DA_rotation_training_argument.training_arguments.domains_list,
             DA_rotation_training_argument.training_arguments.target_domain_list
         )
