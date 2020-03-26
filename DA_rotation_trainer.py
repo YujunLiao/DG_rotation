@@ -282,7 +282,7 @@ if __name__ == "__main__":
             if not os.path.exists(output_file_path):
                 os.makedirs(output_file_path)
             orig_stdout = sys.stdout
-            f = open( output_file_path + 'original_record', 'w')
+            f = open( output_file_path + 'original_record_1', 'w')
             sys.stdout = f
 
         for source_and_target_domain in lazy_man.source_and_target_domain_permutation_list:

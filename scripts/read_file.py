@@ -9,7 +9,7 @@ wb = Workbook()
 ws = wb.active
 
 path = '/home/lyj/Files/project/pycharm/DG_rotation/trainer_utils/output_manager/output_file/'\
-+'era/DA_rotation/resnet50/'
++'Poseidon/DG_rotation/caffenet/'
 path_of_different_parameter_pairs = os.listdir(path)
 path_of_different_parameter_pairs.sort()
 
@@ -18,12 +18,14 @@ row = 1
 for parameter_pair_path in path_of_different_parameter_pairs:
     path_of_different_domain_pairs= os.listdir(path + parameter_pair_path)
     path_of_different_domain_pairs.sort()
-    # files = ['cartoon_art_painting','art_painting_cartoon',  'art_painting_sketch', 'art_painting_photo', ]
+    path_of_different_domain_pairs = ['cartoon_art_painting','art_painting_cartoon',  'art_painting_sketch', 'art_painting_photo', ]
     column = 0
     ws[chr(ord('A') + 1) + str(row)] = parameter_pair_path
     row += 1
     for domain_pair in path_of_different_domain_pairs: #遍历文件夹
-        if domain_pair=='original_record':
+        if domain_pair=='original_record_1':
+            continue
+        if not os.path.exists(path + parameter_pair_path + '/' + domain_pair):
             continue
         domain_pair_words = domain_pair.split('_')
         abbreviation = domain_pair_words[0][0] + domain_pair_words[1][0]
