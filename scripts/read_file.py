@@ -23,7 +23,7 @@ for parameter_pair_path in path_of_different_parameter_pairs:
     ws[chr(ord('A') + 1) + str(row)] = parameter_pair_path
     row += 1
     for domain_pair in path_of_different_domain_pairs: #遍历文件夹
-        if domain_pair=='original_record_1':
+        if domain_pair=='original_record':
             continue
         if not os.path.exists(path + parameter_pair_path + '/' + domain_pair):
             continue

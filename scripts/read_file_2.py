@@ -27,7 +27,7 @@ for parameter_pair_path in path_of_different_parameter_pairs:
     row += 1
 
 
-    origin_file= 'original_record'
+    origin_file= 'original_record_2'
     if not os.path.exists(path + parameter_pair_path + '/' + origin_file):
         print('error')
     # origin_file_words = origin_file.split('_')

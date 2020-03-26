@@ -16,16 +16,16 @@
 CUDA_VISIBLE_DEVICES=$1 \
 /home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 /home/giorgio/Files/pycharm_project/DG_rotation/DG_rotation_trainer.py \
---redirect_to_file 1 \
+--redirect_to_file 0 \
 --parameters_lists 0.4,0.9 \
 --domains_list mnist \
 --target_domain_list mnist_m svhn     \
 --n_classes 10 \
 --repeat_times 3 \
---network lenet  --epochs 15 \
+--network caffenet  --epochs 15 \
 --classify_only_ordered_images_or_not True  --TTA False --nesterov False \
---batch_size 64  --image_size 30 \
---learning_rate 0.02--val_size 0.02  \
+--batch_size 64  --image_size 222 \
+--learning_rate 0.02 --val_size 0.02  \
 --train_all True --folder_name test  \
 --min_scale 0.9 --max_scale 1.0 --random_horiz_flip 0 --jitter 0 --tile_random_grayscale 0.1 \
 --limit_source 10000 --limit_source 30000

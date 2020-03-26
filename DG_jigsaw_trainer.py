@@ -3,6 +3,9 @@
 # Name of method in a class should contain an obvious verbal, like get_something().
 # set attribute within __init__(self) function.
 # 每天学一点，每天改一点
+import sys
+
+import os
 
 import torch
 from torch import nn
@@ -19,7 +22,7 @@ from trainer_utils.data_loader.DGJigsawDataLoader import DGRotationDataLoader
 from trainer_utils.optimizer.MyOptimizer import MyOptimizer
 from trainer_utils.scheduler.MyScheduler import MyScheduler
 from trainer_utils.output_manager.OutputManager import OutputManager
-from trainer_utils.lazy_man.LazyMan import LazyMan
+from trainer_utils.lazy_man.LazyMan import LazyMan, LazyMan2
 import socket
 
 class DGRotationTrainer:
@@ -235,17 +238,26 @@ if __name__ == "__main__":
             my_training_arguments.training_arguments.target_domain_list
         )
 
+        output_file_path = \
+            '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' + \
+            socket.gethostname() + "/DG_rotation/" + \
+            my_training_arguments.training_arguments.network + '/' + \
+            str(my_training_arguments.training_arguments.unsupervised_task_weight) + '_' + \
+            str(my_training_arguments.training_arguments.bias_whole_image) + '/'
+
+        if my_training_arguments.training_arguments.redirect_to_file == 1:
+            if not os.path.exists(output_file_path):
+                os.makedirs(output_file_path)
+            orig_stdout = sys.stdout
+            f = open( output_file_path + 'original_record', 'w')
+            sys.stdout = f
+
         for source_and_target_domain in lazy_man.source_and_target_domain_permutation_list:
             my_training_arguments.training_arguments.source=source_and_target_domain['source_domain']
             my_training_arguments.training_arguments.target=source_and_target_domain['target_domain']
 
             output_manager = OutputManager(
-                output_file_path= \
-                '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' +\
-                socket.gethostname() + "/DG_rotation/" + \
-                my_training_arguments.training_arguments.network + '/' + \
-                str(my_training_arguments.training_arguments.unsupervised_task_weight) + '_' + \
-                str(my_training_arguments.training_arguments.bias_whole_image) + '/',
+                output_file_path=output_file_path,
                 output_file_name=my_training_arguments.training_arguments.source[0]+'_'+ my_training_arguments.training_arguments.target
 
             )
