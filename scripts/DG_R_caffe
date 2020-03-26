@@ -18,7 +18,7 @@ CUDA_VISIBLE_DEVICES=$1 \
 --redirect_to_file 1 \
 --parameters_lists 0.4,0.9 \
 --domains_list art_painting cartoon sketch photo \
---target_domain_list sketch photo    \
+--target_domain_list cartoon     \
 --n_classes 7 \
 --repeat_times 3 \
 --network caffenet  --epochs 30 \
