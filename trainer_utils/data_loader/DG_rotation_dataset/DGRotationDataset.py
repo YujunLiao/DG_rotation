@@ -63,6 +63,21 @@ class DARotationDataset():
 
         self.test_dataset = ConcatDataset([test_dataset])
 
+        # added temporarily
+        test_rotation_dataset = RotationTestDataset2(
+            my_dataset.test_dataset['test_data_paths'],
+            my_dataset.test_dataset['test_labels'],
+            is_patch_based_or_not=is_patch_based_or_not,
+            img_transformer=val_transformer,
+            )
+
+        if max_number_of_test_dataset and len(test_rotation_dataset) > max_number_of_test_dataset:
+            test_rotation_dataset = Subset(test_rotation_dataset, max_number_of_test_dataset)
+
+            # print("Using %d subset of val dataset" % training_arguments.limit_target)
+
+        self.test_rotation_dataset = ConcatDataset([test_rotation_dataset])
+
     def _get_train_transformers(self, training_arguments):
         img_tr = [transforms.RandomResizedCrop((int(training_arguments.image_size), int(training_arguments.image_size)),
                                                (training_arguments.min_scale, training_arguments.max_scale))]
@@ -189,6 +204,28 @@ class RotationTestDataset(RotationTrainDataset):
         img = super(RotationTestDataset, self)._get_image_of_index(index)
         # return self._image_transformer(img), 0, int(self.labels[index])
         return img, 0, int(self._labels[index])
+
+class RotationTestDataset2(RotationTrainDataset):
+    def __init__(self, *args, **xargs):
+        super().__init__(*args, **xargs)
+
+    def __getitem__(self, index):
+        framename = self._data_path + '/' + self._data_paths[index]
+        img = Image.open(framename).convert('RGB')
+
+        img_tr = [transforms.Resize((222, 222)),
+                  transforms.ToTensor(),
+                  transforms.Normalize([0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
+
+        order = np.random.randint(4)
+        if order == 0:
+            data = transforms.Compose(img_tr)(img)
+
+        else:
+            # data = [tiles[self.permutations[order - 1][t]] for t in range(n_grids)]
+            data = transforms.Compose(img_tr)(img.transpose(order + 1))
+        # return self._image_transformer(img), 0, int(self.labels[index])
+        return data, order, int(self._labels[index])
 
 
 class RotationTestDatasetMultiple(RotationTrainDataset):

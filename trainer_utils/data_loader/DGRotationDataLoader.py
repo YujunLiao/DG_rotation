@@ -24,7 +24,7 @@ class DGRotationDataLoader:
         :param my_training_arguments:
         :param is_patch_based_or_not:
         """
-        self.train_data_loader, self.validation_data_loader, self.test_data_loader = self._get_train_and_validation_and_test_data_loader(
+        self.train_data_loader, self.validation_data_loader, self.test_data_loader, self.test_rotation_data_loader = self._get_train_and_validation_and_test_data_loader(
             my_training_arguments,
             is_patch_based_or_not=is_patch_based_or_not
         )
@@ -50,6 +50,7 @@ class DGRotationDataLoader:
         train_dataset=rotation_dataset.train_dataset
         validation_dataset=rotation_dataset.validation_dataset
         test_dataset=rotation_dataset.test_dataset
+        test_rotation_dataset = rotation_dataset.test_rotation_dataset
 
         # dataset =
         # val_dataset = ConcatDataset(validation_dataset_list)
@@ -80,7 +81,16 @@ class DGRotationDataLoader:
             drop_last=False
         )
 
-        return train_data_loader, validation_data_loader, test_data_loader
+        test_rotation_data_loader = torch.utils.data.DataLoader(
+            test_rotation_dataset,
+            batch_size=my_training_arguments.training_arguments.batch_size,
+            shuffle=False,
+            num_workers=4,
+            pin_memory=True,
+            drop_last=False
+        )
+
+        return train_data_loader, validation_data_loader, test_data_loader, test_rotation_data_loader
 
     # def _get_test_data_loader(self, my_training_arguments, is_patch_based_or_not=False):
     #     args = my_training_arguments.training_arguments

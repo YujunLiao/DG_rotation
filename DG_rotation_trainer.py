@@ -35,6 +35,7 @@ class DGRotationTrainer:
         self.train_data_loader = my_data_loader.train_data_loader
         self.validation_data_loader = my_data_loader.validation_data_loader
         self.test_data_loader = my_data_loader.test_data_loader
+        self.test_rotation_data_loader = my_data_loader.test_rotation_data_loader
 
         self.optimizer = my_optimizer.optimizer
         self.scheduler = my_scheduler.scheduler
@@ -113,6 +114,8 @@ class DGRotationTrainer:
                 class_acc = float(class_correct) / total
                 self.logger.log_test(phase, {"jigsaw": jigsaw_acc, "class": class_acc})
                 self.results[phase][self.current_epoch] = class_acc
+            rotation_correct = self.do_test_rotation(self.test_rotation_data_loader)
+            print('test_rotaion_accuracy', self.current_epoch,  float(rotation_correct)/len(self.test_rotation_data_loader))
 
 
     def do_test(self, loader):
@@ -127,6 +130,15 @@ class DGRotationTrainer:
             class_correct += torch.sum(cls_pred == class_l.data)
             jigsaw_correct += torch.sum(jig_pred == jig_l.data)
         return jigsaw_correct, class_correct
+
+    def do_test_rotation(self, loader):
+        jigsaw_correct = 0
+        for it, ((data, jig_l, class_l), _) in enumerate(loader):
+            data, jig_l, class_l = data.to(self.device), jig_l.to(self.device), class_l.to(self.device)
+            jigsaw_logit, class_logit = self.model(data)
+            _, jig_pred = jigsaw_logit.max(dim=1)
+            jigsaw_correct += torch.sum(jig_pred == jig_l.data)
+        return jigsaw_correct
 
 
     def do_test_multi(self, loader):
