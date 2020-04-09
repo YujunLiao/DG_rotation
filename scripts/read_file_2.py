@@ -27,7 +27,7 @@ for parameter_pair_path in path_of_different_parameter_pairs:
     row += 1
 
 
-    origin_file= 'original_record_2'
+    origin_file= 'original_record3'
     if not os.path.exists(path + parameter_pair_path + '/' + origin_file):
         print('error')
     # origin_file_words = origin_file.split('_')
@@ -67,6 +67,9 @@ for parameter_pair_path in path_of_different_parameter_pairs:
             ws[chr(ord('A') + column + 2) + str(row)] = float(words[8][:-1])
             # print(words, words[8])
             row += 1
+        if words[0] == 'test_rotaion_accuracy':
+            print(words[2][:-1])
+            ws[chr(ord('A') + column + 1) + str(row-1)] = float(words[2][:-1])
 
             if epoch == 29:
                 # pass

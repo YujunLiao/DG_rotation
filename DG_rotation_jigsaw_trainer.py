@@ -18,7 +18,7 @@ from trainer_utils.model.MyModel import MyModel
 
 from trainer_utils.logger.Logger import Logger
 from trainer_utils.training_argument.DGRotationTrainingArgument import DGRotationTrainingArgument
-from trainer_utils.data_loader.DGRotationDataLoader import DGRotationDataLoader
+from trainer_utils.data_loader.DGRotationJigsawDataLoader import DGRotationDataLoader
 from trainer_utils.optimizer.MyOptimizer import MyOptimizer
 from trainer_utils.scheduler.MyScheduler import MyScheduler
 from trainer_utils.output_manager.OutputManager import OutputManager
@@ -57,12 +57,14 @@ class DGRotationTrainer:
         self.model.train()
 
         # domain_index_of_images_in_this_patch is target domain index in the source domain list
-        for i, ((data, rotation_label, class_label), domain_index_of_images_in_this_patch) in enumerate(self.train_data_loader):
+        for i, ((data, rotation_label, jigsaw_data, jigsaw_label, class_label), domain_index_of_images_in_this_patch) in enumerate(self.train_data_loader):
             data, rotation_label, class_label, domain_index_of_images_in_this_patch = data.to(self.device), rotation_label.to(self.device), class_label.to(self.device), domain_index_of_images_in_this_patch.to(self.device)
             self.optimizer.zero_grad()
 
             rotation_predict_label, class_predict_label = self.model(data)  # , lambda_val=lambda_val)
+            # jigsaw_predict_label, _ = self.model(jigsaw_data)
             unsupervised_task_loss = criterion(rotation_predict_label, rotation_label)
+            # jigsaw_unsupervised_task_loss = criterion(jigsaw_predict_label, jigsaw_label)
 
             if self.training_arguments.classify_only_ordered_images_or_not:
                 if self.target_domain_index is not None:
@@ -80,7 +82,7 @@ class DGRotationTrainer:
             else:
                 supervised_task_loss = criterion(class_predict_label, class_label)
             _, cls_pred = class_predict_label.max(dim=1)
-            _, jig_pred = rotation_predict_label.max(dim=1)
+            _, rot_pred = rotation_predict_label.max(dim=1)
             # _, domain_pred = domain_logit.max(dim=1)
             loss = supervised_task_loss + unsupervised_task_loss * self.training_arguments.unsupervised_task_weight
 
@@ -95,7 +97,7 @@ class DGRotationTrainer:
                     "class": supervised_task_loss.item()
                  },
                 {
-                    "jigsaw": torch.sum(jig_pred == rotation_label.data).item(),
+                    "jigsaw": torch.sum(rot_pred == rotation_label.data).item(),
                     "class": torch.sum(cls_pred == class_label.data).item(),
                  },
                 data.shape[0]
