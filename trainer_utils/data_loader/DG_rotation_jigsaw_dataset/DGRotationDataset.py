@@ -184,10 +184,11 @@ class RotationTrainDataset(data.Dataset):
             jigsaw_data = [tiles[self.permutations[jigsaw_order - 1][t]] for t in range(n_grids)]
 
 
-
             # TODO(lyj):transform the data according to the order
 
         jigsaw_data = torch.stack(jigsaw_data, 0)
+        jigsaw_data = torchvision.utils.make_grid(jigsaw_data, self.grid_size, padding=0)
+
         # return self.returnFunc(data), int(order), int(self.labels[index])
         # return data, int(order), int(self._labels[index])
         return data, int(order), jigsaw_data, int(jigsaw_order), int(self._labels[index])

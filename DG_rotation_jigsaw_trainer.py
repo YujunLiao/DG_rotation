@@ -59,12 +59,13 @@ class DGRotationTrainer:
         # domain_index_of_images_in_this_patch is target domain index in the source domain list
         for i, ((data, rotation_label, jigsaw_data, jigsaw_label, class_label), domain_index_of_images_in_this_patch) in enumerate(self.train_data_loader):
             data, rotation_label, class_label, domain_index_of_images_in_this_patch = data.to(self.device), rotation_label.to(self.device), class_label.to(self.device), domain_index_of_images_in_this_patch.to(self.device)
+            jigsaw_data, jigsaw_label = jigsaw_data.to(self.device), jigsaw_label.to(self.device)
             self.optimizer.zero_grad()
 
-            rotation_predict_label, class_predict_label = self.model(data)  # , lambda_val=lambda_val)
-            # jigsaw_predict_label, _ = self.model(jigsaw_data)
+            rotation_predict_label, _, class_predict_label = self.model(data)  # , lambda_val=lambda_val)
+            _, jigsaw_predict_label, _ = self.model(jigsaw_data)
             unsupervised_task_loss = criterion(rotation_predict_label, rotation_label)
-            # jigsaw_unsupervised_task_loss = criterion(jigsaw_predict_label, jigsaw_label)
+            jigsaw_unsupervised_task_loss = criterion(jigsaw_predict_label, jigsaw_label)
 
             if self.training_arguments.classify_only_ordered_images_or_not:
                 if self.target_domain_index is not None:
@@ -83,8 +84,9 @@ class DGRotationTrainer:
                 supervised_task_loss = criterion(class_predict_label, class_label)
             _, cls_pred = class_predict_label.max(dim=1)
             _, rot_pred = rotation_predict_label.max(dim=1)
+            _, jig_pred = jigsaw_predict_label.max(dim=1)
             # _, domain_pred = domain_logit.max(dim=1)
-            loss = supervised_task_loss + unsupervised_task_loss * self.training_arguments.unsupervised_task_weight
+            loss = supervised_task_loss + (unsupervised_task_loss + jigsaw_unsupervised_task_loss) * self.training_arguments.unsupervised_task_weight
 
             loss.backward()
             self.optimizer.step()
@@ -93,16 +95,18 @@ class DGRotationTrainer:
                 i,
                 len(self.train_data_loader),
                 {
-                    "jigsaw": unsupervised_task_loss.item(),
+                    "rotation": unsupervised_task_loss.item(),
+                    "jigsaw": jigsaw_unsupervised_task_loss.item(),
                     "class": supervised_task_loss.item()
                  },
                 {
-                    "jigsaw": torch.sum(rot_pred == rotation_label.data).item(),
+                    "rotation": torch.sum(rot_pred == rotation_label.data).item(),
+                    "jigsaw": torch.sum(jig_pred == jigsaw_label.data).item(),
                     "class": torch.sum(cls_pred == class_label.data).item(),
                  },
                 data.shape[0]
             )
-            del loss, supervised_task_loss, unsupervised_task_loss, rotation_predict_label, class_predict_label
+            del loss, supervised_task_loss, unsupervised_task_loss, rotation_predict_label, class_predict_label, jigsaw_unsupervised_task_loss
         self.model.eval()
         with torch.no_grad():
             for phase, loader in self.test_loaders.items():
@@ -116,7 +120,7 @@ class DGRotationTrainer:
                 class_acc = float(class_correct) / total
                 self.logger.log_test(phase, {"jigsaw": jigsaw_acc, "class": class_acc})
                 self.results[phase][self.current_epoch] = class_acc
-            rotation_correct = self.do_test_rotation(self.test_rotation_data_loader)
+            rotation_correct = self.do_test2(self.test_rotation_data_loader)
             print('test_rotaion_accuracy', self.current_epoch,  float(rotation_correct)/len(self.test_rotation_data_loader))
 
 
@@ -126,21 +130,22 @@ class DGRotationTrainer:
         domain_correct = 0
         for it, ((data, jig_l, class_l), _) in enumerate(loader):
             data, jig_l, class_l = data.to(self.device), jig_l.to(self.device), class_l.to(self.device)
-            jigsaw_logit, class_logit = self.model(data)
+            _, jigsaw_logit, class_logit = self.model(data)
             _, cls_pred = class_logit.max(dim=1)
             _, jig_pred = jigsaw_logit.max(dim=1)
             class_correct += torch.sum(cls_pred == class_l.data)
             jigsaw_correct += torch.sum(jig_pred == jig_l.data)
         return jigsaw_correct, class_correct
 
-    def do_test_rotation(self, loader):
-        jigsaw_correct = 0
-        for it, ((data, jig_l, class_l), _) in enumerate(loader):
-            data, jig_l, class_l = data.to(self.device), jig_l.to(self.device), class_l.to(self.device)
-            jigsaw_logit, class_logit = self.model(data)
+    def do_test2(self, loader):
+        rotation_correct = 0
+        for it, ((data, rot_l, class_l), _) in enumerate(loader):
+            data, rot_l, class_l = data.to(self.device), rot_l.to(self.device), class_l.to(self.device)
+            rotation_logit, jigsaw_logit, class_logit = self.model(data)
             _, jig_pred = jigsaw_logit.max(dim=1)
-            jigsaw_correct += torch.sum(jig_pred == jig_l.data)
-        return jigsaw_correct
+            _, rotation_pred = rotation_logit.max(dim=1)
+            rotation_correct += torch.sum(rotation_pred == rot_l.data)
+        return rotation_correct
 
 
     def do_test_multi(self, loader):
