@@ -9,7 +9,7 @@ wb = Workbook()
 ws = wb.active
 
 path = '/home/lyj/Files/project/pycharm/DG_rotation/trainer_utils/output_manager/output_file/'\
-+'Poseidon/DG_rotation/caffenet/'
++'era/DG_rotation/caffenet/'
 path_of_different_parameter_pairs = os.listdir(path)
 path_of_different_parameter_pairs.sort()
 

@@ -86,7 +86,8 @@ class DGRotationTrainer:
             _, rot_pred = rotation_predict_label.max(dim=1)
             _, jig_pred = jigsaw_predict_label.max(dim=1)
             # _, domain_pred = domain_logit.max(dim=1)
-            loss = supervised_task_loss + (unsupervised_task_loss + jigsaw_unsupervised_task_loss) * self.training_arguments.unsupervised_task_weight
+            loss = supervised_task_loss + unsupervised_task_loss * self.training_arguments.unsupervised_task_weight\
+                   + jigsaw_unsupervised_task_loss * self.training_arguments.unsupervised_task_weight_j
 
             loss.backward()
             self.optimizer.step()
@@ -202,6 +203,7 @@ class DGRotationTrainer:
         print(self.training_arguments.target)
         print(self.training_arguments.source)
         print("unsupervised_task_weight:", self.training_arguments.unsupervised_task_weight)
+        print("unsupervised_task_weight_j:", self.training_arguments.unsupervised_task_weight_j)
         # TODO(change bias whole image)
         print("bias_hole_image:", self.training_arguments.bias_whole_image)
         print("only_classify the ordered image:", self.training_arguments.classify_only_ordered_images_or_not)
@@ -216,7 +218,8 @@ class DGRotationTrainer:
             str(strftime("%Y-%m-%d %H:%M:%S", localtime())),
             self.training_arguments.source,
             "target domain:" + self.training_arguments.target,
-            "jigweight:" + str(self.training_arguments.unsupervised_task_weight),
+            "rotation_weight:" + str(self.training_arguments.unsupervised_task_weight),
+            "jigsaw_weight:" + str(self.training_arguments.unsupervised_task_weight_j),
             "bias_hole_image:" + str(self.training_arguments.bias_whole_image),
             "only_classify the ordered image:" + str(self.training_arguments.classify_only_ordered_images_or_not),
             "batch_size:" + str(self.training_arguments.batch_size) + " learning_rate:" + str(self.training_arguments.learning_rate),
@@ -251,7 +254,8 @@ if __name__ == "__main__":
     for parameter_pair in my_training_arguments.training_arguments.parameters_lists:
 
         my_training_arguments.training_arguments.unsupervised_task_weight=parameter_pair[0]
-        my_training_arguments.training_arguments.bias_whole_image=parameter_pair[1]
+        my_training_arguments.training_arguments.unsupervised_task_weight_j = parameter_pair[1]
+        my_training_arguments.training_arguments.bias_whole_image=parameter_pair[2]
         # lazy_man = LazyMan(['CALTECH', 'LABELME', 'PASCAL', 'SUN'])
         # lazy_man = LazyMan(
         #     ['art_painting', 'cartoon', 'sketch', 'photo'],
@@ -264,9 +268,10 @@ if __name__ == "__main__":
 
         output_file_path = \
             '/home/giorgio/Files/pycharm_project/DG_rotation/trainer_utils/output_manager/output_file/' + \
-            socket.gethostname() + "/DG_rotation/" + \
+            socket.gethostname() + "/DG_rot_jig/" + \
             my_training_arguments.training_arguments.network + '/' + \
             str(my_training_arguments.training_arguments.unsupervised_task_weight) + '_' + \
+            str(my_training_arguments.training_arguments.unsupervised_task_weight_j) + '_' + \
             str(my_training_arguments.training_arguments.bias_whole_image) + '/'
 
         if my_training_arguments.training_arguments.redirect_to_file == 1:
