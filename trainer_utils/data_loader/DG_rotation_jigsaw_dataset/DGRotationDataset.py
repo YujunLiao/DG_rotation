@@ -69,7 +69,6 @@ class DARotationDataset():
             my_dataset.test_dataset['test_data_paths'],
             my_dataset.test_dataset['test_labels'],
             is_patch_based_or_not=is_patch_based_or_not,
-            img_transformer=val_transformer,
             )
 
         if max_number_of_test_dataset and len(test_rotation_dataset) > max_number_of_test_dataset:
@@ -144,7 +143,8 @@ class RotationTrainDataset(data.Dataset):
         y = int(n / self.grid_size)
         x = n % self.grid_size
         tile = img.crop([x * w, y * w, (x + 1) * w, (y + 1) * w])
-        tile = self._augment_tile(tile)
+        if self._augment_tile:
+            tile = self._augment_tile(tile)
         return tile
 
     def _get_image_of_index(self, index):
@@ -223,8 +223,27 @@ class RotationTestDataset2(RotationTrainDataset):
         super().__init__(*args, **xargs)
 
     def __getitem__(self, index):
+
+
+
+
+
+
         framename = self._data_path + '/' + self._data_paths[index]
         img = Image.open(framename).convert('RGB')
+
+        jigsaw_img = transforms.Compose([transforms.Resize((222, 222))])(img)
+        jigsaw_img_tr = [transforms.ToTensor(),
+                  transforms.Normalize([0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
+        jigsaw_order = np.random.randint(30) + 1
+        # jigsaw_img = self._get_image_of_index(index)
+        n_grids = self.grid_size ** 2
+        tiles = [None] * n_grids
+        for n in range(n_grids):
+            tile  = self.get_tile(jigsaw_img, n)
+            tiles[n] = transforms.Compose(jigsaw_img_tr)(tile)
+
+
 
         img_tr = [transforms.Resize((222, 222)),
                   transforms.ToTensor(),
@@ -233,12 +252,22 @@ class RotationTestDataset2(RotationTrainDataset):
         order = np.random.randint(4)
         if order == 0:
             data = transforms.Compose(img_tr)(img)
+            jigsaw_data = tiles
 
         else:
             # data = [tiles[self.permutations[order - 1][t]] for t in range(n_grids)]
             data = transforms.Compose(img_tr)(img.transpose(order + 1))
+            jigsaw_data = [tiles[self.permutations[jigsaw_order - 1][t]] for t in range(n_grids)]
         # return self._image_transformer(img), 0, int(self.labels[index])
-        return data, order, int(self._labels[index])
+        #return data, order, int(self._labels[index])
+
+        jigsaw_data = torch.stack(jigsaw_data, 0)
+        jigsaw_data = torchvision.utils.make_grid(jigsaw_data, self.grid_size, padding=0)
+
+
+        # return self.returnFunc(data), int(order), int(self.labels[index])
+        # return data, int(order), int(self._labels[index])
+        return data, int(order), jigsaw_data, int(jigsaw_order), int(self._labels[index])
 
 
 class RotationTestDatasetMultiple(RotationTrainDataset):

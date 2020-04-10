@@ -118,10 +118,11 @@ class DGRotationTrainer:
                     jigsaw_correct, class_correct = self.do_test(loader)
                 jigsaw_acc = float(jigsaw_correct) / total
                 class_acc = float(class_correct) / total
-                self.logger.log_test(phase, {"jigsaw": jigsaw_acc, "class": class_acc})
+                self.logger.log_test(phase, {"**": jigsaw_acc, "class": class_acc})
                 self.results[phase][self.current_epoch] = class_acc
-            rotation_correct = self.do_test2(self.test_rotation_data_loader)
-            print('test_rotaion_accuracy', self.current_epoch,  float(rotation_correct)/len(self.test_rotation_data_loader))
+            rotation_correct, jigsaw_correct = self.do_test2(self.test_rotation_data_loader)
+            print('test_self-supervised_task_accuracy', self.current_epoch,  float(rotation_correct)/len(self.test_rotation_data_loader),\
+            float(jigsaw_correct)/len(self.test_rotation_data_loader))
 
 
     def do_test(self, loader):
@@ -139,13 +140,17 @@ class DGRotationTrainer:
 
     def do_test2(self, loader):
         rotation_correct = 0
-        for it, ((data, rot_l, class_l), _) in enumerate(loader):
+        jigsaw_correct = 0
+        for it, ((data, rot_l, jig_data, jig_l, class_l), _) in enumerate(loader):
             data, rot_l, class_l = data.to(self.device), rot_l.to(self.device), class_l.to(self.device)
-            rotation_logit, jigsaw_logit, class_logit = self.model(data)
+            jig_data, jig_l = jig_data.to(self.device), jig_l.to(self.device)
+            rotation_logit, _, _ = self.model(data)
+            _, jigsaw_logit, _ = self.model(jig_data)
             _, jig_pred = jigsaw_logit.max(dim=1)
             _, rotation_pred = rotation_logit.max(dim=1)
             rotation_correct += torch.sum(rotation_pred == rot_l.data)
-        return rotation_correct
+            jigsaw_correct += torch.sum(jig_pred == jig_l.data)
+        return rotation_correct, jigsaw_correct
 
 
     def do_test_multi(self, loader):
@@ -268,7 +273,7 @@ if __name__ == "__main__":
             if not os.path.exists(output_file_path):
                 os.makedirs(output_file_path)
             orig_stdout = sys.stdout
-            f = open( output_file_path + 'original_record3', 'w')
+            f = open( output_file_path + 'original_record', 'w')
             sys.stdout = f
 
         for source_and_target_domain in lazy_man.source_and_target_domain_permutation_list:
