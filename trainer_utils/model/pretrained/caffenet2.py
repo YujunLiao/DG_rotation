@@ -9,7 +9,7 @@ from trainer_utils.model.pretrained.alexnet import Id
 
 
 class AlexNetCaffe(nn.Module):
-    def __init__(self, jigsaw_classes=1000, n_classes=100, domains=3, dropout=True):
+    def __init__(self, self_supervised_classes=1000, n_classes=100, domains=3, dropout=True):
         super(AlexNetCaffe, self).__init__()
         # print("Using Caffe AlexNet")
         self.features = nn.Sequential(OrderedDict([
@@ -37,7 +37,8 @@ class AlexNetCaffe(nn.Module):
             ("relu7", nn.ReLU(inplace=True)),
             ("drop7", nn.Dropout() if dropout else Id())]))
 
-        self.jigsaw_classifier = nn.Linear(4096, jigsaw_classes)
+        self.rotation_classifier = nn.Linear(4096, self_supervised_classes)
+        self.jigsaw_classifier = nn.Linear(4096, 31)
         self.class_classifier = nn.Linear(4096, n_classes)
         # self.domain_classifier = nn.Sequential(
         #     nn.Linear(256 * 6 * 6, 1024),
@@ -54,8 +55,9 @@ class AlexNetCaffe(nn.Module):
             {
                 "params": chain(
                     self.classifier.parameters(),
-                    self.jigsaw_classifier.parameters(),
-                    self.class_classifier.parameters()#, self.domain_classifier.parameters()
+                    self.rotation_classifier.parameters(),
+                    self.class_classifier.parameters(),#, self.domain_classifier.parameters()
+                    self.jigsaw_classifier.parameters()
                 ),
                 "lr": base_lr
             }
@@ -69,8 +71,8 @@ class AlexNetCaffe(nn.Module):
         x = x.view(x.size(0), -1)
         #d = ReverseLayerF.apply(x, lambda_val)
         x = self.classifier(x)
-        return self.jigsaw_classifier(x), self.class_classifier(x)#, self.domain_classifier(d)
-
+        return self.rotation_classifier(x), self.jigsaw_classifier(x), self.class_classifier(x)#, self.domain_classifier(d)
+        # return self.rotation_classifier(x), self.class_classifier(x)
 
 class Flatten(nn.Module):
     def forward(self, x):

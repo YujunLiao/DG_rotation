@@ -13,16 +13,22 @@
 # 0.4,0.6 0.4,0.7 0.4,0.8 0.4,0.9 0.4,1.0
 # 0.2,0.4 0.3,0.4   0.4,0.4 0.5,0.4 0.6,0.4 0.7,0.4 0.8,0.4 0.9,0.4
 
+# 0.9,1.0,0.4  0.8,1.0,0.4
+# 1.0,0.9,0.4  0.8,0.9,0.4
+# 1.0,0.8,0.4  0.9,0.8,0.4
+# 0.7,1.0,0.4 0.7,0.9,0.4 0.7,0.8,0.4
+# 1.0,0.7,0.4 0.9,0.7,0.4 0.8,0.7,0.4
+# 0.85,0.85,0.4 0.95,0.95,0.4 0.9,0.9,0.45 0.9,0.9,0.35
 CUDA_VISIBLE_DEVICES=$1 \
 /home/giorgio/Files/pycharm_project/pytorch_interpreter/bin/python3.7 -u \
 /home/giorgio/Files/pycharm_project/DG_rotation/DG_rotation_jigsaw_trainer.py \
---redirect_to_file 1 \
---parameters_lists 1.0,1.0,0.4      \
+--redirect_to_file 0 \
+--parameters_lists 0.9,0.9,0.35   \
 --domains_list art_painting cartoon sketch photo \
 --target_domain_list art_painting cartoon sketch photo     \
 --n_classes 7 \
 --repeat_times 3 \
---network caffenet  --epochs 30 \
+--network caffenet2  --epochs 30 \
 --classify_only_ordered_images_or_not True  --TTA False --nesterov False \
 --batch_size 128  --image_size 222 \
 --learning_rate 0.001 --val_size 0.1  \
